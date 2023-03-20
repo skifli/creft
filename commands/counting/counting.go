@@ -74,7 +74,7 @@ func onMessage(bot *disgo.Client, logger *golog.Logger, message *disgo.MessageCr
 					channelDatabase["lastUser"] = message.Author.ID
 
 					if count > channelDatabase["countMax"].(float64) {
-						channelDatabase["countMax"] = count
+						channelDatabase["countMax"] = count + 1.0
 					}
 
 					database.Changed = true
