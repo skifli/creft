@@ -107,13 +107,21 @@ func onMessage(bot *disgo.Client, logger *golog.Logger, message *disgo.MessageCr
 func Handle(bot *disgo.Client, logger *golog.Logger, interaction *disgo.InteractionCreate) {
 	subCommands := interaction.ApplicationCommand().Options
 
+	var channelID string
+
+	if len(subCommands[0].Options) == 0 {
+		channelID = *interaction.ChannelID
+	} else {
+		channelID = subCommands[0].Options[0].Value.String()
+	}
+
 	switch subCommands[0].Name {
 	case "add":
-		HandleAdd(bot, logger, interaction, subCommands[0].Options[0].Value.String())
+		HandleAdd(bot, logger, interaction, channelID)
 	case "remove":
-		HandleRemove(bot, logger, interaction, subCommands[0].Options[0].Value.String())
+		HandleRemove(bot, logger, interaction, channelID)
 	case "stats":
-		HandleStats(bot, logger, interaction, subCommands[0].Options[0].Value.String())
+		HandleStats(bot, logger, interaction, channelID)
 	}
 }
 
