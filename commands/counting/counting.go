@@ -3,13 +3,14 @@ package counting
 import (
 	"creft/database"
 	"fmt"
+	"math"
 
 	"github.com/maja42/goval"
 	"github.com/skifli/golog"
 	"github.com/switchupcb/disgo"
 )
 
-func onMessage(bot *disgo.Client, logger *golog.Logger, message *disgo.MessageCreate) {
+func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.MessageCreate) {
 	if channelDatabase, ok := database.DatabaseJSON["counting"][message.ChannelID].(map[string]any); ok {
 		expression := goval.NewEvaluator()
 
@@ -17,7 +18,7 @@ func onMessage(bot *disgo.Client, logger *golog.Logger, message *disgo.MessageCr
 			var response *disgo.CreateMessage
 			response = nil
 
-			if message.Author.ID == channelDatabase["lastUser"] {
+			if message.Author.ID == channelDatabase["lastCountUserID"] {
 				response = &disgo.CreateMessage{
 					ChannelID: message.ChannelID,
 					MessageReference: &disgo.MessageReference{
@@ -30,7 +31,7 @@ func onMessage(bot *disgo.Client, logger *golog.Logger, message *disgo.MessageCr
 							Title:       disgo.Pointer("Please Wait"),
 							Description: disgo.Pointer("You **counted last**. Please wait for **someone else** to count!"),
 							Color:       disgo.Pointer(6591981),
-							Footer:      &disgo.EmbedFooter{Text: "Run /about for more information about the bot."},
+							Footer:      &disgo.EmbedFooter{Text: "Idk if that was even correct. Run /about for more information about the bot."},
 						},
 					},
 				}
@@ -41,13 +42,16 @@ func onMessage(bot *disgo.Client, logger *golog.Logger, message *disgo.MessageCr
 				switch v := result.(type) {
 				case int:
 					value = float64(v)
+				case float32:
+				case float64:
+					value = math.Round(value)
 				default:
 					failed = true
 				}
 
-				count := channelDatabase["count"].(float64)
+				count := channelDatabase["count"].(float64) + 1.0
 
-				if failed || value != count+1.0 {
+				if failed || value != count {
 					response = &disgo.CreateMessage{
 						ChannelID: message.ChannelID,
 						MessageReference: &disgo.MessageReference{
@@ -58,23 +62,22 @@ func onMessage(bot *disgo.Client, logger *golog.Logger, message *disgo.MessageCr
 						Embeds: []*disgo.Embed{
 							{
 								Title:       disgo.Pointer("Incorrect"),
-								Description: disgo.Pointer(fmt.Sprintf("The correct number was **`%0.f`**. The count has reset to **`0`**.", count+1)),
+								Description: disgo.Pointer(fmt.Sprintf("The correct number was **`%0.f`**. The count has reset to **`0`**.", count)),
 								Color:       disgo.Pointer(13789294),
-								Footer:      &disgo.EmbedFooter{Text: "Run /about for more information about the bot."},
+								Footer:      &disgo.EmbedFooter{Text: "RIP streak. Run /about for more information about the bot."},
 							},
 						},
 					}
 
-					channelDatabase["count"] = 0.0
-					channelDatabase["resetsCount"] = channelDatabase["resetsCount"].(float64) + 1.0
-					channelDatabase["lastUser"] = ""
+					channelDatabase = map[string]any{"count": 0.0, "countMax": 0.0, "lastCountUserID": "", "lastCountMessageID": "", "resetsCount": 0.0}
 					database.Changed = true
 				} else {
-					channelDatabase["count"] = count + 1.0
-					channelDatabase["lastUser"] = message.Author.ID
+					channelDatabase["count"] = count
+					channelDatabase["lastCountUserID"] = message.Author.ID
+					channelDatabase["lastCountMessageID"] = message.ID
 
 					if count > channelDatabase["countMax"].(float64) {
-						channelDatabase["countMax"] = count + 1.0
+						channelDatabase["countMax"] = count
 					}
 
 					database.Changed = true
@@ -95,10 +98,34 @@ func onMessage(bot *disgo.Client, logger *golog.Logger, message *disgo.MessageCr
 
 			if response != nil {
 				if _, err := response.Send(bot); err != nil {
-					logger.Errorf("Failed to send message response: %s", nil, err)
+					logger.Errorf("Failed to respond to a message: %s", nil, err)
 				} else {
 					logger.Infof("Responded to a message from %s#%s.", nil, message.Author.Username, message.Author.Discriminator)
 				}
+			}
+		}
+	}
+}
+
+func onMessageDelete(bot *disgo.Client, logger *golog.Logger, message *disgo.MessageDelete) {
+	if channelDatabase, ok := database.DatabaseJSON["counting"][message.ChannelID].(map[string]any); ok {
+		if channelDatabase["lastCountMessageID"] == message.MessageID {
+			response := &disgo.CreateMessage{
+				ChannelID: message.ChannelID,
+				Embeds: []*disgo.Embed{
+					{
+						Title:       disgo.Pointer("I saw that"),
+						Description: disgo.Pointer(fmt.Sprintf("<@%s> **deleted** their message. The count is at **`%.0f`**.", channelDatabase["lastCountUserID"], channelDatabase["count"])),
+						Color:       disgo.Pointer(6591981),
+						Footer:      &disgo.EmbedFooter{Text: "Cheeky! Run /about for more information about the bot."},
+					},
+				},
+			}
+
+			if _, err := response.Send(bot); err != nil {
+				logger.Errorf("Failed to respond to a deleted message: %s", nil, err)
+			} else {
+				logger.Infof("Responded to a deleted message from %s.", nil, channelDatabase["lastCountMessageAuthor"])
 			}
 		}
 	}
@@ -176,7 +203,9 @@ func Init(bot *disgo.Client, logger *golog.Logger) {
 		logger.Fatalf("Failed to add slash command to bot: %s", nil, err)
 	}
 
-	if err := bot.Handle(disgo.FlagGatewayEventNameMessageCreate, func(message *disgo.MessageCreate) { onMessage(bot, logger, message) }); err != nil {
+	if err := bot.Handle(disgo.FlagGatewayEventNameMessageCreate, func(message *disgo.MessageCreate) { onMessageCreate(bot, logger, message) }); err != nil {
+		logger.Fatalf("Failed to add event handler to bot: %s", nil, err)
+	} else if err := bot.Handle(disgo.FlagGatewayEventNameMessageDelete, func(message *disgo.MessageDelete) { onMessageDelete(bot, logger, message) }); err != nil {
 		logger.Fatalf("Failed to add event handler to bot: %s", nil, err)
 	}
 }

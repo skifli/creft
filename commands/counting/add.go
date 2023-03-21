@@ -68,13 +68,13 @@ func HandleAdd(bot *disgo.Client, logger *golog.Logger, interaction *disgo.Inter
 				},
 			}
 
-			database.DatabaseJSON["counting"][channel] = map[string]any{"count": 0.0, "countMax": 0.0, "lastUser": "0", "resetsCount": 0.0}
+			database.DatabaseJSON["counting"][channel] = map[string]any{"count": 0.0, "countMax": 0.0, "lastCountUserID": "", "lastCountMessageID": "", "resetsCount": 0.0}
 			database.Changed = true
 		}
 	}
 
 	if err := response.Send(bot); err != nil {
-		logger.Errorf("Failed to send slash command response: %s", nil, err)
+		logger.Errorf("Failed to respond to an interaction: %s", nil, err)
 	} else {
 		logger.Infof("Responded to an interaction from %s#%s.", nil, interaction.Member.User.Username, interaction.Member.User.Discriminator)
 	}

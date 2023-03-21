@@ -22,7 +22,7 @@ func HandleStats(bot *disgo.Client, logger *golog.Logger, interaction *disgo.Int
 					Embeds: []*disgo.Embed{
 						{
 							Title:       disgo.Pointer(fmt.Sprintf("Info for <#%s>", channel)),
-							Description: disgo.Pointer(fmt.Sprintf("The current count is **`%d`**.\nThe highest count that has been reached is **`%d`**.\nThe count has been reset **`%d`** time(s).\nThe last user to count was <@%s>", uint64(channelDatabase["count"].(float64)), uint64(channelDatabase["countMax"].(float64)), uint64(channelDatabase["resetsCount"].(float64)), channelDatabase["lastUser"].(string))),
+							Description: disgo.Pointer(fmt.Sprintf("The current count is **`%d`**.\nThe highest count that has been reached is **`%d`**.\nThe count has been reset **`%d`** time(s).\nThe last user to count was <@%s>. They counted at [this message](https://discord.com/channels/%s/%s/%s)", uint64(channelDatabase["count"].(float64)), uint64(channelDatabase["countMax"].(float64)), uint64(channelDatabase["resetsCount"].(float64)), channelDatabase["lastCountUserID"].(string), *interaction.GuildID, channel, channelDatabase["lastCountMessageID"].(string))),
 							Color:       disgo.Pointer(5082199),
 							Footer:      &disgo.EmbedFooter{Text: "Run /about for more information about the bot."},
 						},
@@ -51,7 +51,7 @@ func HandleStats(bot *disgo.Client, logger *golog.Logger, interaction *disgo.Int
 	}
 
 	if err := response.Send(bot); err != nil {
-		logger.Errorf("Failed to send slash command response: %s", nil, err)
+		logger.Errorf("Failed to respond to an interaction: %s", nil, err)
 	} else {
 		logger.Infof("Responded to an interaction from %s#%s.", nil, interaction.Member.User.Username, interaction.Member.User.Discriminator)
 	}
