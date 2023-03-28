@@ -57,19 +57,19 @@ func main() {
 	commands.Init(bot, logger)
 	database.Init(logger, args.Pause)
 
-	logger.Info("Connecting to the Discord Gateway...", nil)
+	logger.Info("Connecting to the Discord Gateway...")
 
 	session := disgo.NewSession()
 
 	if err = session.Connect(bot); err != nil {
-		logger.Fatalf("Failed to connect to the Discord Gateway: %s", nil, err)
+		logger.Fatalf("Failed to connect to the Discord Gateway: %s", err)
 	}
 
-	logger.Info("Connected to the Discord Gateway. Waiting for interactions...", nil)
+	logger.Info("Connected to the Discord Gateway. Waiting for interactions...")
 
 	if err := tools.InterceptSignal(tools.Signals, session); err != nil {
-		logger.Fatalf("Error exiting the program: %s", nil, err)
+		logger.Fatalf("Error exiting the program: %s", err)
 	}
 
-	logger.Info("Disconnected from the Discord Gateway.", nil)
+	logger.Info("Disconnected from the Discord Gateway.")
 }

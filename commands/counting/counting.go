@@ -89,18 +89,18 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 					}
 
 					if err := reaction.Send(bot); err != nil {
-						logger.Errorf("Failed to react to a message: %s", nil, err)
+						logger.Errorf("Failed to react to a message: %s", err)
 					} else {
-						logger.Infof("Reacted to a message from %s#%s.", nil, message.Author.Username, message.Author.Discriminator)
+						logger.Infof("Reacted to a message from %s#%s.", message.Author.Username, message.Author.Discriminator)
 					}
 				}
 			}
 
 			if response != nil {
 				if _, err := response.Send(bot); err != nil {
-					logger.Errorf("Failed to respond to a message: %s", nil, err)
+					logger.Errorf("Failed to respond to a message: %s", err)
 				} else {
-					logger.Infof("Responded to a message from %s#%s.", nil, message.Author.Username, message.Author.Discriminator)
+					logger.Infof("Responded to a message from %s#%s.", message.Author.Username, message.Author.Discriminator)
 				}
 			}
 		}
@@ -123,9 +123,9 @@ func onMessageDelete(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 			}
 
 			if _, err := response.Send(bot); err != nil {
-				logger.Errorf("Failed to respond to a deleted message: %s", nil, err)
+				logger.Errorf("Failed to respond to a deleted message: %s", err)
 			} else {
-				logger.Infof("Responded to a deleted message from %s.", nil, channelDatabase["lastCountMessageAuthor"])
+				logger.Infof("Responded to a deleted message from %s.", channelDatabase["lastCountMessageAuthor"])
 			}
 		}
 	}
@@ -200,12 +200,12 @@ func Init(bot *disgo.Client, logger *golog.Logger) {
 	_, err := request.Send(bot)
 
 	if err != nil {
-		logger.Fatalf("Failed to add slash command to bot: %s", nil, err)
+		logger.Fatalf("Failed to add slash command to bot: %s", err)
 	}
 
 	if err := bot.Handle(disgo.FlagGatewayEventNameMessageCreate, func(message *disgo.MessageCreate) { onMessageCreate(bot, logger, message) }); err != nil {
-		logger.Fatalf("Failed to add event handler to bot: %s", nil, err)
+		logger.Fatalf("Failed to add event handler to bot: %s", err)
 	} else if err := bot.Handle(disgo.FlagGatewayEventNameMessageDelete, func(message *disgo.MessageDelete) { onMessageDelete(bot, logger, message) }); err != nil {
-		logger.Fatalf("Failed to add event handler to bot: %s", nil, err)
+		logger.Fatalf("Failed to add event handler to bot: %s", err)
 	}
 }

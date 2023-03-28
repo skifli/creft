@@ -24,6 +24,6 @@ func Init(bot *disgo.Client, logger *golog.Logger) {
 	counting.Init(bot, logger)
 
 	if err := bot.Handle(disgo.FlagGatewayEventNameInteractionCreate, func(interaction *disgo.InteractionCreate) { Handle(bot, logger, interaction) }); err != nil {
-		logger.Fatalf("Failed to add event handler to bot: %s", nil, err)
+		logger.Fatalf("Failed to add event handler to bot: %s", err)
 	}
 }

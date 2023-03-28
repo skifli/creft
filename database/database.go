@@ -18,12 +18,12 @@ func updateDatabase(logger *golog.Logger) {
 	databaseBytes, err := json.Marshal(DatabaseJSON)
 
 	if Changed {
-		logger.Info("RAM database has changed, updating on-disk database.", nil)
+		logger.Info("RAM database has changed, updating on-disk database.")
 		Changed = false
 	}
 
 	if err != nil {
-		logger.Errorf("Failed to convert database to bytes for writing to disk: %s", nil, err)
+		logger.Errorf("Failed to convert database to bytes for writing to disk: %s", err)
 		return
 	}
 
@@ -32,11 +32,11 @@ func updateDatabase(logger *golog.Logger) {
 	_, err = databaseFile.Write(databaseBytes)
 
 	if err != nil {
-		logger.Errorf("Failed to write database to disk: %s", nil, err)
+		logger.Errorf("Failed to write database to disk: %s", err)
 		return
 	}
 
-	logger.Info("Updated on-disk database.", nil)
+	logger.Info("Updated on-disk database.")
 }
 
 func updateDatabaseLoop(logger *golog.Logger, pause time.Duration) {
@@ -62,19 +62,19 @@ func Init(logger *golog.Logger, pause time.Duration) {
 		}
 
 		if err != nil {
-			logger.Fatalf("Failed to read database file: %s", nil, err)
+			logger.Fatalf("Failed to read database file: %s", err)
 		}
 	} else {
 		databaseTmp, err := io.ReadAll(databaseFile)
 
 		if err != nil {
-			logger.Fatalf("Failed to parse database file: %s", nil, err)
+			logger.Fatalf("Failed to parse database file: %s", err)
 		}
 
 		err = json.Unmarshal(databaseTmp, &DatabaseJSON)
 
 		if err != nil {
-			logger.Fatalf("Failed to parse database file: %s", nil, err)
+			logger.Fatalf("Failed to parse database file: %s", err)
 		}
 	}
 

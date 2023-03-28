@@ -30,9 +30,9 @@ func Handle(bot *disgo.Client, logger *golog.Logger, interaction *disgo.Interact
 	}
 
 	if err := response.Send(bot); err != nil {
-		logger.Errorf("Failed to send slash command response: %s", nil, err)
+		logger.Errorf("Failed to send slash command response: %s", err)
 	} else {
-		logger.Infof("Responded to an interaction from %s#%s.", nil, interaction.Member.User.Username, interaction.Member.User.Discriminator)
+		logger.Infof("Responded to an interaction from %s#%s.", interaction.Member.User.Username, interaction.Member.User.Discriminator)
 	}
 }
 
@@ -46,6 +46,6 @@ func Init(bot *disgo.Client, logger *golog.Logger) {
 	_, err := request.Send(bot)
 
 	if err != nil {
-		logger.Fatalf("Failed to add slash command to bot: %s", nil, err)
+		logger.Fatalf("Failed to add slash command to bot: %s", err)
 	}
 }
