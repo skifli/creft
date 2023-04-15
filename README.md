@@ -6,9 +6,6 @@
 
 A simple utility / games bot for Discord. It contains features such as counting channels.
 
-> **Note** Why not join the [testing server](https://discord.gg/Fj56Yj6KPw)?
-
-
 ## Installation
 
 * Make sure you have [Go](https://go.dev) installed and is in your system environment variables as **`go`**. If you do not have go installed, you can install it from [here](https://go.dev/dl/).
