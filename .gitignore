@@ -18,6 +18,5 @@
 go.work
 
 # Custom
-
 _config.json
 database.json
