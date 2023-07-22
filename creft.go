@@ -49,6 +49,7 @@ func main() {
 		Authentication: disgo.BotToken(config["botToken"]),
 		Config:         disgo.DefaultConfig(),
 		Handlers:       new(disgo.Handlers),
+		Sessions:       disgo.NewSessionManager(),
 	}
 
 	bot.Config.Gateway.IntentSet[disgo.FlagIntentMESSAGE_CONTENT] = true
