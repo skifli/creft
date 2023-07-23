@@ -8,7 +8,7 @@ import (
 	"github.com/switchupcb/disgo"
 )
 
-func HandleAdd(bot *disgo.Client, logger *golog.Logger, interaction *disgo.InteractionCreate) {
+func HandleRemove(bot *disgo.Client, logger *golog.Logger, interaction *disgo.InteractionCreate) {
 	subCommands := interaction.ApplicationCommand().Options
 	userID := subCommands[0].Options[0].Value.String()
 
@@ -43,15 +43,18 @@ func HandleAdd(bot *disgo.Client, logger *golog.Logger, interaction *disgo.Inter
 					Data: &disgo.Messages{
 						Embeds: []*disgo.Embed{
 							{
-								Title:       disgo.Pointer("Error"),
-								Description: disgo.Pointer("The specified user has **already been added**.\nRun **`/admins remove {user}`** to remove them."),
-								Color:       disgo.Pointer(13789294),
+								Title:       disgo.Pointer("Success"),
+								Description: disgo.Pointer("The specified user was **successfully** removed."),
+								Color:       disgo.Pointer(5082199),
 								Footer:      &disgo.EmbedFooter{Text: "Run /about for more information about the bot."},
 							},
 						},
 					},
 				},
 			}
+
+			delete(database.DatabaseJSON["admins"].(map[string]any), userID)
+			database.Changed = true
 		} else {
 			response = &disgo.CreateInteractionResponse{
 				InteractionID:    interaction.ID,
@@ -61,18 +64,15 @@ func HandleAdd(bot *disgo.Client, logger *golog.Logger, interaction *disgo.Inter
 					Data: &disgo.Messages{
 						Embeds: []*disgo.Embed{
 							{
-								Title:       disgo.Pointer("Success"),
-								Description: disgo.Pointer("The specified user was **successfully** added."),
-								Color:       disgo.Pointer(5082199),
+								Title:       disgo.Pointer("Error"),
+								Description: disgo.Pointer("The specified user has **not been added**.\nRun **`/admins add {user}`** to add them."),
+								Color:       disgo.Pointer(13789294),
 								Footer:      &disgo.EmbedFooter{Text: "Run /about for more information about the bot."},
 							},
 						},
 					},
 				},
 			}
-
-			database.DatabaseJSON["admins"].(map[string]any)[userID] = struct{}{}
-			database.Changed = true
 		}
 	}
 

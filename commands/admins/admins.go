@@ -13,6 +13,8 @@ func Handle(bot *disgo.Client, logger *golog.Logger, interaction *disgo.Interact
 		HandleAdd(bot, logger, interaction)
 	case "list":
 		HandleList(bot, logger, interaction)
+	case "remove":
+		HandleRemove(bot, logger, interaction)
 	}
 }
 
@@ -38,6 +40,18 @@ func Init(bot *disgo.Client, logger *golog.Logger) {
 				Name:        "list",
 				Description: "Lists all admins.",
 				Type:        disgo.FlagApplicationCommandOptionTypeSUB_COMMAND,
+			},
+			{
+				Name:        "remove",
+				Description: "Removes an admin.",
+				Type:        disgo.FlagApplicationCommandOptionTypeSUB_COMMAND,
+				Options: []*disgo.ApplicationCommandOption{
+					{
+						Name:        "user",
+						Description: "The user to remove.",
+						Type:        disgo.FlagApplicationCommandOptionTypeUSER,
+					},
+				},
 			},
 		},
 	}
