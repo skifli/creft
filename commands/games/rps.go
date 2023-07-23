@@ -8,6 +8,12 @@ import (
 	"github.com/switchupcb/disgo"
 )
 
+func HandleRPSPlay(bot *disgo.Client, logger *golog.Logger, interaction *disgo.InteractionCreate, subCommands []*disgo.ApplicationCommandInteractionDataOption) {
+	if !startGame(bot, interaction, logger) {
+		return
+	}
+}
+
 func HandleRPSStats(bot *disgo.Client, logger *golog.Logger, interaction *disgo.InteractionCreate, subCommands []*disgo.ApplicationCommandInteractionDataOption) {
 	var response *disgo.CreateInteractionResponse
 	var userID string
@@ -57,6 +63,8 @@ func HandleRPSStats(bot *disgo.Client, logger *golog.Logger, interaction *disgo.
 
 func HandleRPS(bot *disgo.Client, logger *golog.Logger, interaction *disgo.InteractionCreate, subCommands []*disgo.ApplicationCommandInteractionDataOption) {
 	switch subCommands[0].Options[0].Name {
+	case "play":
+		HandleRPSPlay(bot, logger, interaction, subCommands)
 	case "stats":
 		HandleRPSStats(bot, logger, interaction, subCommands)
 	}

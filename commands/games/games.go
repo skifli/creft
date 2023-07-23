@@ -5,6 +5,41 @@ import (
 	"github.com/switchupcb/disgo"
 )
 
+var games map[string]struct{} = make(map[string]struct{})
+
+func startGame(bot *disgo.Client, interaction *disgo.InteractionCreate, logger *golog.Logger) bool {
+	if _, ok := games[interaction.Member.User.ID]; ok {
+		response := &disgo.CreateInteractionResponse{
+			InteractionID:    interaction.ID,
+			InteractionToken: interaction.Token,
+			InteractionResponse: &disgo.InteractionResponse{
+				Type: disgo.FlagInteractionCallbackTypeCHANNEL_MESSAGE_WITH_SOURCE,
+				Data: &disgo.Messages{
+					Embeds: []*disgo.Embed{
+						{
+							Title:       disgo.Pointer("Error"),
+							Description: disgo.Pointer("You are **already in a game**. You can't play multiple games at once!\nPlease **finish your current game** before starting another one."),
+							Color:       disgo.Pointer(13789294),
+							Footer:      &disgo.EmbedFooter{Text: "Run /about for more information about the bot."},
+						},
+					},
+				},
+			},
+		}
+
+		if err := response.Send(bot); err != nil {
+			logger.Errorf("Failed to send slash command response: %s", err)
+		} else {
+			logger.Infof("Responded to an interaction from %s.", interaction.Member.User.Username)
+		}
+
+		return false
+	}
+
+	games[interaction.Member.User.ID] = struct{}{}
+	return true
+}
+
 func Handle(bot *disgo.Client, logger *golog.Logger, interaction *disgo.InteractionCreate) {
 	subCommands := interaction.ApplicationCommand().Options
 
