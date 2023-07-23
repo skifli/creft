@@ -1,7 +1,6 @@
 # Creft
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/skifli/creft)](https://goreportcard.com/report/github.com/skifli/creft)
-[![GoDoc](https://godoc.org/github.com/skifli/creft?status.svg)](https://godoc.org/github.com/skifli/creft)
 ![Lines of Code](https://img.shields.io/github/languages/code-size/skifli/creft)
 
 - [Creft](#creft)
