@@ -12,7 +12,7 @@ import (
 
 var Changed = false
 var databaseFile *os.File
-var DatabaseJSON map[string]map[string]any
+var DatabaseJSON map[string]any
 
 func updateDatabase(logger *golog.Logger) {
 	databaseBytes, err := json.Marshal(DatabaseJSON)
@@ -57,7 +57,7 @@ func Init(logger *golog.Logger, pause time.Duration) {
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
 			databaseFile, err = os.OpenFile("./database.json", os.O_RDWR|os.O_CREATE, 0777)
-			DatabaseJSON = map[string]map[string]any{"counting": {}}
+			DatabaseJSON = map[string]any{"counting": map[string]any{}, "admins": map[string]any{}}
 			updateDatabase(logger)
 		}
 

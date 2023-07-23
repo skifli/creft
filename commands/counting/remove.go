@@ -12,7 +12,7 @@ func HandleRemove(bot *disgo.Client, logger *golog.Logger, interaction *disgo.In
 	var response *disgo.CreateInteractionResponse
 	response = nil
 
-	if !utils.HasAdminPerms(interaction.Member.Permissions) {
+	if !utils.HasAdminPerms(interaction.Member.User.ID) {
 		response = &disgo.CreateInteractionResponse{
 			InteractionID:    interaction.ID,
 			InteractionToken: interaction.Token,
@@ -31,7 +31,7 @@ func HandleRemove(bot *disgo.Client, logger *golog.Logger, interaction *disgo.In
 			},
 		}
 	} else {
-		if _, ok := database.DatabaseJSON["counting"][channel]; ok {
+		if _, ok := database.DatabaseJSON["counting"].(map[string]any)[channel]; ok {
 			response = &disgo.CreateInteractionResponse{
 				InteractionID:    interaction.ID,
 				InteractionToken: interaction.Token,
@@ -50,7 +50,7 @@ func HandleRemove(bot *disgo.Client, logger *golog.Logger, interaction *disgo.In
 				},
 			}
 
-			delete(database.DatabaseJSON["counting"], channel)
+			delete(database.DatabaseJSON["counting"].(map[string]any), channel)
 			database.Changed = true
 		} else {
 			response = &disgo.CreateInteractionResponse{

@@ -12,7 +12,7 @@ func HandleStats(bot *disgo.Client, logger *golog.Logger, interaction *disgo.Int
 	var response *disgo.CreateInteractionResponse
 	response = nil
 
-	if channelDatabase, ok := database.DatabaseJSON["counting"][channel].(map[string]any); ok {
+	if channelDatabase, ok := database.DatabaseJSON["counting"].(map[string]any)[channel].(map[string]any); ok {
 		response = &disgo.CreateInteractionResponse{
 			InteractionID:    interaction.ID,
 			InteractionToken: interaction.Token,

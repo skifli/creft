@@ -12,7 +12,7 @@ func HandleAdd(bot *disgo.Client, logger *golog.Logger, interaction *disgo.Inter
 	var response *disgo.CreateInteractionResponse
 	response = nil
 
-	if !utils.HasAdminPerms(interaction.Member.Permissions) {
+	if !utils.HasAdminPerms(interaction.Member.User.ID) {
 		response = &disgo.CreateInteractionResponse{
 			InteractionID:    interaction.ID,
 			InteractionToken: interaction.Token,
@@ -31,7 +31,7 @@ func HandleAdd(bot *disgo.Client, logger *golog.Logger, interaction *disgo.Inter
 			},
 		}
 	} else {
-		if _, ok := database.DatabaseJSON["counting"][channel]; ok {
+		if _, ok := database.DatabaseJSON["counting"].(map[string]any)[channel]; ok {
 			response = &disgo.CreateInteractionResponse{
 				InteractionID:    interaction.ID,
 				InteractionToken: interaction.Token,
@@ -68,7 +68,7 @@ func HandleAdd(bot *disgo.Client, logger *golog.Logger, interaction *disgo.Inter
 				},
 			}
 
-			database.DatabaseJSON["counting"][channel] = map[string]any{"count": 0.0, "countMax": 0.0, "lastCountUserID": "", "lastCountMessageID": "", "resetsCount": 0.0}
+			database.DatabaseJSON["counting"].(map[string]any)[channel] = map[string]any{"count": 0.0, "countMax": 0.0, "lastCountUserID": "", "lastCountMessageID": "", "resetsCount": 0.0}
 			database.Changed = true
 		}
 	}

@@ -11,7 +11,7 @@ import (
 )
 
 func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.MessageCreate) {
-	if channelDatabase, ok := database.DatabaseJSON["counting"][message.ChannelID].(map[string]any); ok {
+	if channelDatabase, ok := database.DatabaseJSON["counting"].(map[string]any)[message.ChannelID].(map[string]any); ok {
 		expression := goval.NewEvaluator()
 
 		if result, err := expression.Evaluate(message.Content, nil, nil); err == nil {
@@ -69,7 +69,7 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 						},
 					}
 
-					database.DatabaseJSON["counting"][message.ChannelID] = map[string]any{"count": 0.0, "countMax": 0.0, "lastCountUserID": "", "lastCountMessageID": "", "resetsCount": channelDatabase["resetsCount"].(float64) + 1}
+					database.DatabaseJSON["counting"].(map[string]any)[message.ChannelID] = map[string]any{"count": 0.0, "countMax": 0.0, "lastCountUserID": "", "lastCountMessageID": "", "resetsCount": channelDatabase["resetsCount"].(float64) + 1}
 					database.Changed = true
 				} else {
 					channelDatabase["count"] = count
@@ -108,7 +108,7 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 }
 
 func onMessageDelete(bot *disgo.Client, logger *golog.Logger, message *disgo.MessageDelete) {
-	if channelDatabase, ok := database.DatabaseJSON["counting"][message.ChannelID].(map[string]any); ok {
+	if channelDatabase, ok := database.DatabaseJSON["counting"].(map[string]any)[message.ChannelID].(map[string]any); ok {
 		if channelDatabase["lastCountMessageID"] == message.MessageID {
 			response := &disgo.CreateMessage{
 				ChannelID: message.ChannelID,
