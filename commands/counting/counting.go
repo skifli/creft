@@ -44,7 +44,7 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 					value = float64(v)
 				case float32:
 				case float64:
-					value = math.Round(value)
+					value = math.Round(v)
 				default:
 					failed = true
 				}
@@ -62,7 +62,7 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 						Embeds: []*disgo.Embed{
 							{
 								Title:       disgo.Pointer("Incorrect"),
-								Description: disgo.Pointer(fmt.Sprintf("The correct number was **`%0.f`**. The count has reset to **`0`**.", count)),
+								Description: disgo.Pointer(fmt.Sprintf("The correct number was **`%0.f`**, but you said **`%0.f`**. The count has reset to **`0`**.", count, value)),
 								Color:       disgo.Pointer(13789294),
 								Footer:      &disgo.EmbedFooter{Text: "RIP streak. Run /about for more information about the bot."},
 							},

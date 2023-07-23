@@ -57,7 +57,7 @@ func Init(logger *golog.Logger, pause time.Duration) {
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
 			databaseFile, err = os.OpenFile("./database.json", os.O_RDWR|os.O_CREATE, 0777)
-			DatabaseJSON = map[string]any{"counting": map[string]any{}, "admins": map[string]any{}}
+			DatabaseJSON = map[string]any{"admins": map[string]any{}, "counting": map[string]any{}, "games": map[string]any{"userStats": map[string]any{}, "rps": map[string]any{"gamesCount": 0}}}
 			updateDatabase(logger)
 		}
 
