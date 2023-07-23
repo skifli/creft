@@ -32,7 +32,7 @@ func Handle(bot *disgo.Client, logger *golog.Logger, interaction *disgo.Interact
 	if err := response.Send(bot); err != nil {
 		logger.Errorf("Failed to send slash command response: %s", err)
 	} else {
-		logger.Infof("Responded to an interaction from %s#%s.", interaction.Member.User.Username, interaction.Member.User.Discriminator)
+		logger.Infof("Responded to an interaction from %s.", interaction.Member.User.Username)
 	}
 }
 
