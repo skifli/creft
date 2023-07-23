@@ -23,7 +23,7 @@ func HandleStats(bot *disgo.Client, logger *golog.Logger, interaction *disgo.Int
 						{
 							Title:       disgo.Pointer(fmt.Sprintf("Info for <#%s>", channel)),
 							Description: disgo.Pointer(fmt.Sprintf("The current count is **`%d`**.\nThe highest count that has been reached is **`%d`**.\nThe count has been reset **`%d`** time(s).\nThe last user to count was <@%s>. They counted at [this message](https://discord.com/channels/%s/%s/%s).", uint64(channelDatabase["count"].(float64)), uint64(channelDatabase["countMax"].(float64)), uint64(channelDatabase["resetsCount"].(float64)), channelDatabase["lastCountUserID"].(string), *interaction.GuildID, channel, channelDatabase["lastCountMessageID"].(string))),
-							Color:       disgo.Pointer(5082199),
+							Color:       disgo.Pointer(6591981),
 							Footer:      &disgo.EmbedFooter{Text: "Run /about for more information about the bot."},
 						},
 					},

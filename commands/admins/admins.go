@@ -5,6 +5,15 @@ import (
 	"github.com/switchupcb/disgo"
 )
 
+func Handle(bot *disgo.Client, logger *golog.Logger, interaction *disgo.InteractionCreate) {
+	subCommands := interaction.ApplicationCommand().Options
+
+	switch subCommands[0].Name {
+	case "list":
+		HandleList(bot, logger, interaction)
+	}
+}
+
 func Init(bot *disgo.Client, logger *golog.Logger) {
 	request := disgo.CreateGlobalApplicationCommand{
 		Name:        "admins",
