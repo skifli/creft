@@ -43,9 +43,41 @@ func HandleStatsServer(bot *disgo.Client, logger *golog.Logger, interaction *dis
 }
 
 func HandleStatsUser(bot *disgo.Client, logger *golog.Logger, interaction *disgo.InteractionCreate, subCommands []*disgo.ApplicationCommandInteractionDataOption) {
-	userID := subCommands[0].Options[0].Options[0].Value.String()
+	var response *disgo.CreateInteractionResponse
+	var userID string
 
-	if _, ok := database.DatabaseJSON["users"].(map[string]any)[userID]; !ok {
+	if len(subCommands[0].Options[0].Options) == 0 {
+		userID = interaction.Member.User.ID
+	} else {
+		userID = subCommands[0].Options[0].Options[0].Value.String()
+	}
+
+	if stats, ok := database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[userID]; ok {
+		fmt.Println(stats) // TODO: Finish this
+	} else {
+		response = &disgo.CreateInteractionResponse{
+			InteractionID:    interaction.ID,
+			InteractionToken: interaction.Token,
+			InteractionResponse: &disgo.InteractionResponse{
+				Type: disgo.FlagInteractionCallbackTypeCHANNEL_MESSAGE_WITH_SOURCE,
+				Data: &disgo.Messages{
+					Embeds: []*disgo.Embed{
+						{
+							Title:       disgo.Pointer("Error"),
+							Description: disgo.Pointer(fmt.Sprintf("<@%s> has **not played any games**.\nAnd if you haven't, what are you waiting for?", userID)),
+							Color:       disgo.Pointer(13789294),
+							Footer:      &disgo.EmbedFooter{Text: "Run /about for more information about the bot."},
+						},
+					},
+				},
+			},
+		}
+	}
+
+	if err := response.Send(bot); err != nil {
+		logger.Errorf("Failed to respond to an interaction: %s", err)
+	} else {
+		logger.Infof("Responded to an interaction from %s.", interaction.Member.User.Username)
 	}
 }
 

@@ -9,6 +9,8 @@ func Handle(bot *disgo.Client, logger *golog.Logger, interaction *disgo.Interact
 	subCommands := interaction.ApplicationCommand().Options
 
 	switch subCommands[0].Name {
+	case "rps":
+		HandleRPS(bot, logger, interaction, subCommands)
 	case "stats":
 		HandleStats(bot, logger, interaction, subCommands)
 	}
@@ -21,7 +23,7 @@ func Init(bot *disgo.Client, logger *golog.Logger) {
 		Options: []*disgo.ApplicationCommandOption{
 			{
 				Name:        "stats",
-				Description: "Views game stats.",
+				Description: "View game stats.",
 				Type:        disgo.FlagApplicationCommandOptionTypeSUB_COMMAND_GROUP,
 				Options: []*disgo.ApplicationCommandOption{
 					{
@@ -38,7 +40,38 @@ func Init(bot *disgo.Client, logger *golog.Logger) {
 								Name:        "user",
 								Description: "The user to view game stats for.",
 								Type:        disgo.FlagApplicationCommandOptionTypeUSER,
+							},
+						},
+					},
+				},
+			},
+			{
+				Name:        "rps",
+				Description: "The classic rock paper scissors game.",
+				Type:        disgo.FlagApplicationCommandOptionTypeSUB_COMMAND_GROUP,
+				Options: []*disgo.ApplicationCommandOption{
+					{
+						Name:        "play",
+						Description: "Play rock paper scissors.",
+						Type:        disgo.FlagApplicationCommandOptionTypeSUB_COMMAND,
+						Options: []*disgo.ApplicationCommandOption{
+							{
+								Name:        "user",
+								Description: "The user to play against.",
+								Type:        disgo.FlagApplicationCommandOptionTypeUSER,
 								Required:    disgo.Pointer(true),
+							},
+						},
+					},
+					{
+						Name:        "stats",
+						Description: "View a user's rock paper scissors stats.",
+						Type:        disgo.FlagApplicationCommandOptionTypeSUB_COMMAND,
+						Options: []*disgo.ApplicationCommandOption{
+							{
+								Name:        "user",
+								Description: "The user to view rock paper scissors stats for.",
+								Type:        disgo.FlagApplicationCommandOptionTypeUSER,
 							},
 						},
 					},
