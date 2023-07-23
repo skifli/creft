@@ -91,7 +91,7 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 					if err := reaction.Send(bot); err != nil {
 						logger.Errorf("Failed to react to a message: %s", err)
 					} else {
-						logger.Infof("Reacted to a message from %s.", message.Author.Username, message.Author.Discriminator)
+						logger.Infof("Reacted to a message from %s.", message.Author.Username)
 					}
 				}
 			}
@@ -100,7 +100,7 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 				if _, err := response.Send(bot); err != nil {
 					logger.Errorf("Failed to respond to a message: %s", err)
 				} else {
-					logger.Infof("Responded to a message from %s.", message.Author.Username, message.Author.Discriminator)
+					logger.Infof("Responded to a message from %s.", message.Author.Username)
 				}
 			}
 		}
