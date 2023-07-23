@@ -22,7 +22,7 @@ func HandleAdd(bot *disgo.Client, logger *golog.Logger, interaction *disgo.Inter
 					Embeds: []*disgo.Embed{
 						{
 							Title:       disgo.Pointer("Missing Permissions"),
-							Description: disgo.Pointer("You do not have **sufficient permissions** to run this command.\nYou need a role with the **Administrator Permission**."),
+							Description: disgo.Pointer("You do not have **sufficient permissions** to run this command.\nYou need to be on the **admins list**."),
 							Color:       disgo.Pointer(13789294),
 							Footer:      &disgo.EmbedFooter{Text: "Run /about for more information about the bot."},
 						},

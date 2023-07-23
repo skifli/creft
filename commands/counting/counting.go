@@ -31,7 +31,7 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 							Title:       disgo.Pointer("Please Wait"),
 							Description: disgo.Pointer("You **counted last**. Please wait for **someone else** to count!"),
 							Color:       disgo.Pointer(6591981),
-							Footer:      &disgo.EmbedFooter{Text: "Idk if that was even correct. Run /about for more information about the bot."},
+							Footer:      &disgo.EmbedFooter{Text: "Idk if that was even correct, but I will let it slide. Run /about for more information about the bot."},
 						},
 					},
 				}
