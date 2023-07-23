@@ -11,7 +11,7 @@ import (
 func HandleList(bot *disgo.Client, logger *golog.Logger, interaction *disgo.InteractionCreate) {
 	admins := ""
 
-	for admin, _ := range database.DatabaseJSON["admins"].(map[string]any) {
+	for admin := range database.DatabaseJSON["admins"].(map[string]any) {
 		admins += fmt.Sprintf("<@%s>\n", admin)
 	}
 
