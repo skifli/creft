@@ -5,10 +5,10 @@ import (
 	"github.com/switchupcb/disgo"
 )
 
-var games map[string]struct{} = make(map[string]struct{})
+var userGames map[string]struct{} = make(map[string]struct{})
 
 func startGame(bot *disgo.Client, interaction *disgo.InteractionCreate, logger *golog.Logger) bool {
-	if _, ok := games[interaction.Member.User.ID]; ok {
+	if _, ok := userGames[interaction.Member.User.ID]; ok {
 		response := &disgo.CreateInteractionResponse{
 			InteractionID:    interaction.ID,
 			InteractionToken: interaction.Token,
@@ -36,7 +36,7 @@ func startGame(bot *disgo.Client, interaction *disgo.InteractionCreate, logger *
 		return false
 	}
 
-	games[interaction.Member.User.ID] = struct{}{}
+	userGames[interaction.Member.User.ID] = struct{}{}
 	return true
 }
 

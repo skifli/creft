@@ -12,6 +12,57 @@ func HandleRPSPlay(bot *disgo.Client, logger *golog.Logger, interaction *disgo.I
 	if !startGame(bot, interaction, logger) {
 		return
 	}
+
+	response := &disgo.CreateInteractionResponse{
+		InteractionID:    interaction.ID,
+		InteractionToken: interaction.Token,
+		InteractionResponse: &disgo.InteractionResponse{
+			Type: disgo.FlagInteractionCallbackTypeCHANNEL_MESSAGE_WITH_SOURCE,
+			Data: &disgo.Messages{
+				Embeds: []*disgo.Embed{
+					{
+						Title:       disgo.Pointer("Rock, Paper, Scissors"),
+						Description: disgo.Pointer(fmt.Sprintf("Choose your weapon <@%s>!", interaction.Member.User.ID)),
+						Color:       disgo.Pointer(6591981),
+						Footer:      &disgo.EmbedFooter{Text: "Run /about for more information about the bot."},
+					},
+				},
+				Components: []disgo.Component{
+					disgo.ActionsRow{
+						Components: []disgo.Component{
+							&disgo.Button{
+								Label:    disgo.Pointer("Rock"),
+								CustomID: disgo.Pointer("rock"),
+								Emoji: &disgo.Emoji{
+									Name: disgo.Pointer("U0001F9FA"),
+								},
+							},
+							&disgo.Button{
+								Label:    disgo.Pointer("Paper"),
+								CustomID: disgo.Pointer("paper"),
+								Emoji: &disgo.Emoji{
+									Name: disgo.Pointer("U0001F4DC"),
+								},
+							},
+							&disgo.Button{
+								Label:    disgo.Pointer("Scissors"),
+								CustomID: disgo.Pointer("scissors"),
+								Emoji: &disgo.Emoji{
+									Name: disgo.Pointer("U00002702"),
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	if err := response.Send(bot); err != nil {
+		logger.Errorf("Failed to respond to an interaction: %s", err)
+	} else {
+		logger.Infof("Responded to an interaction from %s.", interaction.Member.User.Username)
+	}
 }
 
 func HandleRPSStats(bot *disgo.Client, logger *golog.Logger, interaction *disgo.InteractionCreate, subCommands []*disgo.ApplicationCommandInteractionDataOption) {
