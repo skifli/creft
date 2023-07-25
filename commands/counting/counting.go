@@ -4,6 +4,8 @@ import (
 	"creft/database"
 	"fmt"
 	"math"
+	"runtime"
+	"strings"
 
 	"github.com/maja42/goval"
 	"github.com/skifli/golog"
@@ -11,6 +13,55 @@ import (
 )
 
 func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.MessageCreate) {
+	defer func() {
+		if r := recover(); r != nil {
+			var response *disgo.CreateMessage
+			response = nil
+
+			if strings.Contains(r.(runtime.Error).Error(), "integer divide by zero") {
+				response = &disgo.CreateMessage{
+					ChannelID: message.ChannelID,
+					MessageReference: &disgo.MessageReference{
+						MessageID: disgo.Pointer(message.ID),
+						ChannelID: disgo.Pointer(message.ChannelID),
+						GuildID:   message.GuildID,
+					},
+					Embeds: []*disgo.Embed{
+						{
+							Title:       disgo.Pointer("Cheeky"),
+							Description: disgo.Pointer("Imagine trying to divide by **`0`**. Couldn't be you.\nThe count has stayed the same."),
+							Color:       disgo.Pointer(6591981),
+							Footer:      &disgo.EmbedFooter{Text: "Nothing eventful happened. Run /about for more information about the bot."},
+						},
+					},
+				}
+			} else {
+				response = &disgo.CreateMessage{
+					ChannelID: message.ChannelID,
+					MessageReference: &disgo.MessageReference{
+						MessageID: disgo.Pointer(message.ID),
+						ChannelID: disgo.Pointer(message.ChannelID),
+						GuildID:   message.GuildID,
+					},
+					Embeds: []*disgo.Embed{
+						{
+							Title:       disgo.Pointer("Error"),
+							Description: disgo.Pointer(fmt.Sprintf("An unknown error occurred: **`%s`**.\nThe count has stayed the same.", r.(string))),
+							Color:       disgo.Pointer(13789294),
+							Footer:      &disgo.EmbedFooter{Text: "Run /about for more information about the bot."},
+						},
+					},
+				}
+			}
+
+			if _, err := response.Send(bot); err != nil {
+				logger.Errorf("Failed to respond to a message: %s", err)
+			} else {
+				logger.Infof("Responded to a message from %s.", message.Author.Username)
+			}
+		}
+	}()
+
 	if channelDatabase, ok := database.DatabaseJSON["counting"].(map[string]any)[message.ChannelID].(map[string]any); ok {
 		expression := goval.NewEvaluator()
 
