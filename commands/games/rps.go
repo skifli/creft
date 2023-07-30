@@ -28,27 +28,37 @@ func HandleRPSPlay(bot *disgo.Client, logger *golog.Logger, interaction *disgo.I
 					},
 				},
 				Components: []disgo.Component{
-					disgo.ActionsRow{
+					&disgo.ActionRow{
+						Type: disgo.FlagComponentTypeActionRow,
 						Components: []disgo.Component{
 							&disgo.Button{
+								Type:     disgo.FlagComponentTypeButton,
+								Style:    disgo.FlagButtonStylePRIMARY,
 								Label:    disgo.Pointer("Rock"),
 								CustomID: disgo.Pointer("rock"),
 								Emoji: &disgo.Emoji{
-									Name: disgo.Pointer("U0001F9FA"),
+									ID:   nil,
+									Name: disgo.Pointer("\U0001F5FB"),
 								},
 							},
 							&disgo.Button{
+								Type:     disgo.FlagComponentTypeButton,
+								Style:    disgo.FlagButtonStylePRIMARY,
 								Label:    disgo.Pointer("Paper"),
 								CustomID: disgo.Pointer("paper"),
 								Emoji: &disgo.Emoji{
-									Name: disgo.Pointer("U0001F4DC"),
+									ID:   nil,
+									Name: disgo.Pointer("\U0001F4DC"),
 								},
 							},
 							&disgo.Button{
+								Type:     disgo.FlagComponentTypeButton,
+								Style:    disgo.FlagButtonStylePRIMARY,
 								Label:    disgo.Pointer("Scissors"),
 								CustomID: disgo.Pointer("scissors"),
 								Emoji: &disgo.Emoji{
-									Name: disgo.Pointer("U00002702"),
+									ID:   nil,
+									Name: disgo.Pointer("\U00002702"),
 								},
 							},
 						},
