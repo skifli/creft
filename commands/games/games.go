@@ -120,4 +120,8 @@ func Init(bot *disgo.Client, logger *golog.Logger) {
 	if err != nil {
 		logger.Fatalf("Failed to add slash command to bot: %s", err)
 	}
+
+	if err := bot.Handle(disgo.FlagGatewayEventNameInteractionCreate, func(interaction *disgo.InteractionCreate) { onInteractionCreate(bot, logger, interaction) }); err != nil {
+		logger.Fatalf("Failed to add event handler to bot: %s", err)
+	}
 }
