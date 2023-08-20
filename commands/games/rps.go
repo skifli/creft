@@ -103,7 +103,7 @@ func HandleRPSInteraction(bot *disgo.Client, logger *golog.Logger, interaction *
 		} else {
 			logger.Infof("Responded to an interaction from %s.", interaction.Member.User.Username)
 		}
-	} else if len(game["choices"].(string)) == 2 {
+	} else if len(game["choices"].([]string)) == 2 {
 		winner := -1
 
 		if choices[0] == choices[1] {
