@@ -1,9 +1,10 @@
 package games
 
 import (
-	"creft/database"
 	"fmt"
 	"strings"
+
+	"github.com/skifli/creft/database"
 
 	"github.com/skifli/golog"
 	"github.com/switchupcb/disgo"

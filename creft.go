@@ -5,8 +5,8 @@ import (
 	"os"
 	"time"
 
-	"creft/commands"
-	"creft/database"
+	"github.com/skifli/creft/commands"
+	"github.com/skifli/creft/database"
 
 	"github.com/alexflint/go-arg"
 	"github.com/goccy/go-json"

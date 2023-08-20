@@ -1,11 +1,12 @@
 package commands
 
 import (
-	"creft/commands/about"
-	"creft/commands/admins"
-	"creft/commands/counting"
-	"creft/commands/games"
 	"strings"
+
+	"github.com/skifli/creft/commands/about"
+	"github.com/skifli/creft/commands/admins"
+	"github.com/skifli/creft/commands/counting"
+	"github.com/skifli/creft/commands/games"
 
 	"github.com/skifli/golog"
 	"github.com/switchupcb/disgo"

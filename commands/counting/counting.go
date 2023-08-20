@@ -1,11 +1,12 @@
 package counting
 
 import (
-	"creft/database"
 	"fmt"
 	"math"
 	"runtime"
 	"strings"
+
+	"github.com/skifli/creft/database"
 
 	"github.com/maja42/goval"
 	"github.com/skifli/golog"

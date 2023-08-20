@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"creft/database"
+	"github.com/skifli/creft/database"
 )
 
 func HasAdminPerms(userID string) bool {

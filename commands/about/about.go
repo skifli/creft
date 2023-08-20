@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"creft/utils"
+	"github.com/skifli/creft/utils"
 
 	"github.com/skifli/golog"
 	"github.com/switchupcb/disgo"

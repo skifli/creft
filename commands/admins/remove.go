@@ -1,8 +1,8 @@
 package admins
 
 import (
-	"creft/database"
-	"creft/utils"
+	"github.com/skifli/creft/database"
+	"github.com/skifli/creft/utils"
 
 	"github.com/skifli/golog"
 	"github.com/switchupcb/disgo"
