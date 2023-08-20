@@ -140,6 +140,7 @@ func HandleRPSInteraction(bot *disgo.Client, logger *golog.Logger, interaction *
 				Color:       disgo.Pointer(6591981),
 				Footer:      &disgo.EmbedFooter{Text: "Run /about for more information about the bot."},
 			}}),
+			Components: disgo.Pointer([]disgo.Component{}),
 		}
 
 		if _, err := response.Send(bot); err != nil {
