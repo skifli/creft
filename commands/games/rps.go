@@ -157,18 +157,18 @@ func HandleRPSInteraction(bot *disgo.Client, logger *golog.Logger, interaction *
 			database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[1]] = map[string]any{"rps": map[string]any{"gamesPlayed": 0, "gamesWon": 0, "gamesLost": 0}}
 		}
 
-		database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[0]].(map[string]any)["rps"].(map[string]any)["gamesPlayed"] = database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[0]].(map[string]any)["rps"].(map[string]any)["gamesPlayed"].(int) + 1
-		database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[1]].(map[string]any)["rps"].(map[string]any)["gamesPlayed"] = database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[1]].(map[string]any)["rps"].(map[string]any)["gamesPlayed"].(int) + 1
+		database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[0]].(map[string]any)["rps"].(map[string]any)["gamesPlayed"] = database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[0]].(map[string]any)["rps"].(map[string]any)["gamesPlayed"].(float64) + 1
+		database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[1]].(map[string]any)["rps"].(map[string]any)["gamesPlayed"] = database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[1]].(map[string]any)["rps"].(map[string]any)["gamesPlayed"].(float64) + 1
 
-		database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[winner]].(map[string]any)["rps"].(map[string]any)["gamesWon"] = database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[winner]].(map[string]any)["rps"].(map[string]any)["gamesWon"].(int) + 1
-		database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[1-winner]].(map[string]any)["rps"].(map[string]any)["gamesLost"] = database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[1-winner]].(map[string]any)["rps"].(map[string]any)["gamesLost"].(int) + 1
+		database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[winner]].(map[string]any)["rps"].(map[string]any)["gamesWon"] = database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[winner]].(map[string]any)["rps"].(map[string]any)["gamesWon"].(float64) + 1
+		database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[1-winner]].(map[string]any)["rps"].(map[string]any)["gamesLost"] = database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[1-winner]].(map[string]any)["rps"].(map[string]any)["gamesLost"].(float64) + 1
 
 		if winner == -1 {
-			database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[0]].(map[string]any)["rps"].(map[string]any)["gamesDrawn"] = database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[0]].(map[string]any)["rps"].(map[string]any)["gamesDrawn"].(int) + 1
-			database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[1]].(map[string]any)["rps"].(map[string]any)["gamesDrawn"] = database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[1]].(map[string]any)["rps"].(map[string]any)["gamesDrawn"].(int) + 1
+			database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[0]].(map[string]any)["rps"].(map[string]any)["gamesDrawn"] = database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[0]].(map[string]any)["rps"].(map[string]any)["gamesDrawn"].(float64) + 1
+			database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[1]].(map[string]any)["rps"].(map[string]any)["gamesDrawn"] = database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[1]].(map[string]any)["rps"].(map[string]any)["gamesDrawn"].(float64) + 1
 		}
 
-		database.DatabaseJSON["games"].(map[string]any)["rps"].(map[string]any)["gamesCount"] = database.DatabaseJSON["games"].(map[string]any)["rps"].(map[string]any)["gamesCount"].(int) + 1
+		database.DatabaseJSON["games"].(map[string]any)["rps"].(map[string]any)["gamesCount"] = database.DatabaseJSON["games"].(map[string]any)["rps"].(map[string]any)["gamesCount"].(float64) + 1
 
 		database.Changed = true
 	}
