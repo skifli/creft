@@ -5,12 +5,25 @@ import (
 	"creft/commands/admins"
 	"creft/commands/counting"
 	"creft/commands/games"
+	"strings"
 
 	"github.com/skifli/golog"
 	"github.com/switchupcb/disgo"
 )
 
 func Handle(bot *disgo.Client, logger *golog.Logger, interaction *disgo.InteractionCreate) {
+	defer func() {
+		if err := recover(); err != nil {
+			interactionCustomID := interaction.MessageComponent().CustomID
+
+			if strings.HasPrefix(interactionCustomID, "games_") {
+				games.HandleInteraction(bot, logger, interaction, interactionCustomID)
+			} else {
+				// TODO: Add error
+			}
+		}
+	}()
+
 	commmandName := interaction.ApplicationCommand().Name
 
 	switch commmandName {

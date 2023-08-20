@@ -1,11 +1,14 @@
 package games
 
 import (
+	"strings"
+
 	"github.com/skifli/golog"
 	"github.com/switchupcb/disgo"
 )
 
 var userGames map[string]struct{} = make(map[string]struct{})
+var games map[string]map[string]any = make(map[string]map[string]any)
 
 func startGame(bot *disgo.Client, interaction *disgo.InteractionCreate, logger *golog.Logger) bool {
 	if _, ok := userGames[interaction.Member.User.ID]; ok {
@@ -38,6 +41,14 @@ func startGame(bot *disgo.Client, interaction *disgo.InteractionCreate, logger *
 
 	userGames[interaction.Member.User.ID] = struct{}{}
 	return true
+}
+
+func HandleInteraction(bot *disgo.Client, logger *golog.Logger, interaction *disgo.InteractionCreate, interactionCustomID string) {
+	if strings.HasPrefix(interactionCustomID, "games_rps") {
+		HandleRPSInteraction(bot, logger, interaction, interactionCustomID)
+	} else {
+		// TODO: Add error
+	}
 }
 
 func Handle(bot *disgo.Client, logger *golog.Logger, interaction *disgo.InteractionCreate) {
@@ -119,9 +130,5 @@ func Init(bot *disgo.Client, logger *golog.Logger) {
 
 	if err != nil {
 		logger.Fatalf("Failed to add slash command to bot: %s", err)
-	}
-
-	if err := bot.Handle(disgo.FlagGatewayEventNameInteractionCreate, func(interaction *disgo.InteractionCreate) { onInteractionCreate(bot, logger, interaction) }); err != nil {
-		logger.Fatalf("Failed to add event handler to bot: %s", err)
 	}
 }
