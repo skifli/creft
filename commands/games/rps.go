@@ -50,6 +50,7 @@ func HandleRPSInteraction(bot *disgo.Client, logger *golog.Logger, interaction *
 	}
 
 	game["choices"] = append(choices, choice)
+	choices = game["choices"].([]string)
 
 	if len(game["choices"].([]string)) == 1 {
 		response := &disgo.EditOriginalInteractionResponse{
