@@ -169,6 +169,8 @@ func HandleRPSInteraction(bot *disgo.Client, logger *golog.Logger, interaction *
 
 		database.Changed = true
 	}
+
+	// TODO: Add a response that is Ephemeral.
 }
 
 func HandleRPSPlay(bot *disgo.Client, logger *golog.Logger, interaction *disgo.InteractionCreate, subCommands []*disgo.ApplicationCommandInteractionDataOption) {
