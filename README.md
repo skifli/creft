@@ -7,7 +7,7 @@
   - [Installation](#installation)
   - [Config](#config)
 
-A simple utility / games bot for Discord. It contains features such as counting channels.
+A simple utility / games bot for Discord. It contains features such as counting channels and games such as rock, paper, scissors.
 
 ## Installation
 

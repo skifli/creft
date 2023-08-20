@@ -1,4 +1,4 @@
-module creft
+module github.com/skifli/creft
 
 go 1.20
 
