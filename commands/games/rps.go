@@ -36,9 +36,10 @@ func HandleRPSInteraction(bot *disgo.Client, logger *golog.Logger, interaction *
 							Footer:      &disgo.EmbedFooter{Text: "Run /about for more information about the bot."},
 						},
 					},
+					Flags: disgo.Pointer(disgo.FlagMessageEPHEMERAL),
 				},
 			},
-		} // TODO: Make it Ephemeral.
+		}
 
 		if err := response.Send(bot); err != nil {
 			logger.Errorf("Failed to respond to an interaction: %s", err)
@@ -173,7 +174,30 @@ func HandleRPSInteraction(bot *disgo.Client, logger *golog.Logger, interaction *
 		database.Changed = true
 	}
 
-	// TODO: Add a response that is Ephemeral.
+	response := &disgo.CreateInteractionResponse{
+		InteractionID:    interaction.ID,
+		InteractionToken: interaction.Token,
+		InteractionResponse: &disgo.InteractionResponse{
+			Type: disgo.FlagInteractionCallbackTypeCHANNEL_MESSAGE_WITH_SOURCE,
+			Data: &disgo.Messages{
+				Embeds: []*disgo.Embed{
+					{
+						Title:       disgo.Pointer("Rock, Paper, Scissors"),
+						Description: disgo.Pointer(fmt.Sprintf("You chose **%s** <@%s>!", choice, interaction.Member.User.ID)),
+						Color:       disgo.Pointer(6591981),
+						Footer:      &disgo.EmbedFooter{Text: "Run /about for more information about the bot."},
+					},
+				},
+				Flags: disgo.Pointer(disgo.FlagMessageEPHEMERAL),
+			},
+		},
+	}
+
+	if err := response.Send(bot); err != nil {
+		logger.Errorf("Failed to respond to an interaction: %s", err)
+	} else {
+		logger.Infof("Responded to an interaction from %s.", interaction.Member.User.Username)
+	}
 }
 
 func HandleRPSPlay(bot *disgo.Client, logger *golog.Logger, interaction *disgo.InteractionCreate, subCommands []*disgo.ApplicationCommandInteractionDataOption) {
@@ -261,7 +285,24 @@ func HandleRPSStats(bot *disgo.Client, logger *golog.Logger, interaction *disgo.
 
 	if _, ok := database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[userID]; ok {
 		if stats, ok := database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[userID].(map[string]any)["rps"]; ok {
-			fmt.Println(stats) // TODO: Finish this
+			response = &disgo.CreateInteractionResponse{
+				InteractionID:    interaction.ID,
+				InteractionToken: interaction.Token,
+				InteractionResponse: &disgo.InteractionResponse{
+					Type: disgo.FlagInteractionCallbackTypeCHANNEL_MESSAGE_WITH_SOURCE,
+					Data: &disgo.Messages{
+						Embeds: []*disgo.Embed{
+							{
+								Title:       disgo.Pointer("Rock, Paper, Scissors"),
+								Description: disgo.Pointer(fmt.Sprintf("<@%s> has played **%d** game(s).\nThey have won **%d** game(s) and lost **%d** game(s).", userID, int(stats.(map[string]any)["gamesPlayed"].(float64)), int(stats.(map[string]any)["gamesWon"].(float64)), int(stats.(map[string]any)["gamesLost"].(float64)))),
+								Color:       disgo.Pointer(6591981),
+								Footer:      &disgo.EmbedFooter{Text: "Run /about for more information about the bot."},
+							},
+						},
+						Flags: disgo.Pointer(disgo.FlagMessageEPHEMERAL),
+					},
+				},
+			}
 
 			found = true
 		}
@@ -282,6 +323,7 @@ func HandleRPSStats(bot *disgo.Client, logger *golog.Logger, interaction *disgo.
 							Footer:      &disgo.EmbedFooter{Text: "Run /about for more information about the bot."},
 						},
 					},
+					Flags: disgo.Pointer(disgo.FlagMessageEPHEMERAL),
 				},
 			},
 		}

@@ -32,6 +32,7 @@ func HandleStatsServer(bot *disgo.Client, logger *golog.Logger, interaction *dis
 						},
 					},
 				},
+				Flags: disgo.Pointer(disgo.FlagMessageEPHEMERAL),
 			},
 		},
 	}
@@ -77,6 +78,7 @@ func HandleStatsUser(bot *disgo.Client, logger *golog.Logger, interaction *disgo
 							},
 						},
 					},
+					Flags: disgo.Pointer(disgo.FlagMessageEPHEMERAL),
 				},
 			},
 		}
@@ -95,6 +97,7 @@ func HandleStatsUser(bot *disgo.Client, logger *golog.Logger, interaction *disgo
 							Footer:      &disgo.EmbedFooter{Text: "Run /about for more information about the bot."},
 						},
 					},
+					Flags: disgo.Pointer(disgo.FlagMessageEPHEMERAL),
 				},
 			},
 		}
