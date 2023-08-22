@@ -43,6 +43,10 @@ func startGame(bot *disgo.Client, interaction *disgo.InteractionCreate, logger *
 	return true
 }
 
+func endGame(interaction *disgo.InteractionCreate) {
+	delete(userGames, interaction.Member.User.ID)
+}
+
 func HandleInteraction(bot *disgo.Client, logger *golog.Logger, interaction *disgo.InteractionCreate, interactionCustomID string) {
 	if strings.HasPrefix(interactionCustomID, "games_rps") {
 		HandleRPSInteraction(bot, logger, interaction, interactionCustomID)

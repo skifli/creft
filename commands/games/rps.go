@@ -172,6 +172,8 @@ func HandleRPSInteraction(bot *disgo.Client, logger *golog.Logger, interaction *
 		database.DatabaseJSON["games"].(map[string]any)["rps"].(map[string]any)["gamesCount"] = database.DatabaseJSON["games"].(map[string]any)["rps"].(map[string]any)["gamesCount"].(float64) + 1
 
 		database.Changed = true
+
+		endGame(game["interaction"].(*disgo.InteractionCreate))
 	}
 
 	response := &disgo.CreateInteractionResponse{
