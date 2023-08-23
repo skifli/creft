@@ -8,7 +8,6 @@ require (
 	github.com/maja42/goval v1.3.1 // Expression evaluation
 	github.com/skifli/golog v1.1.0 // Better Logging
 	github.com/switchupcb/disgo v1.10.2-0.20230730073530-349d45654529 // Discord API Wrapper
-
 )
 
 require (
