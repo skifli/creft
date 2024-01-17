@@ -21,3 +21,5 @@ go.work
 _config.json
 database.json
 creft
+build
+gocc

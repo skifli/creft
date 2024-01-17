@@ -1,0 +1,6 @@
+{
+    "mode": "allow",
+    "targets": [
+        "windows/*"
+    ]
+}
