@@ -20,7 +20,7 @@ func Handle(bot *disgo.Client, logger *golog.Logger, interaction *disgo.Interact
 				Embeds: []*disgo.Embed{
 					{
 						Title:       disgo.Pointer("About"),
-						Description: disgo.Pointer(fmt.Sprintf("This instance has been online for **`%.2f`** seconds.\nBot created by **skifli#8774**.\nGitHub Repository: https://github.com/skifli/creft.", time.Since(utils.StartTime).Seconds())),
+						Description: disgo.Pointer(fmt.Sprintf("This instance has been online for **`%.2f`** seconds.\nBot created by **skifli**.\nGitHub Repository: https://github.com/skifli/creft.", time.Since(utils.StartTime).Seconds())),
 						Color:       disgo.Pointer(6591981),
 						Footer:      &disgo.EmbedFooter{Text: "Hello there."},
 					},
