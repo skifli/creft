@@ -35,6 +35,7 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 							Footer:      &disgo.EmbedFooter{Text: "Nothing eventful happened. Run /about for more information about the bot."},
 						},
 					},
+					Flags: disgo.Pointer(disgo.FlagMessageEPHEMERAL),
 				}
 			} else {
 				response = &disgo.CreateMessage{
@@ -52,6 +53,7 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 							Footer:      &disgo.EmbedFooter{Text: "Run /about for more information about the bot."},
 						},
 					},
+					Flags: disgo.Pointer(disgo.FlagMessageEPHEMERAL),
 				}
 			}
 
@@ -86,6 +88,7 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 							Footer:      &disgo.EmbedFooter{Text: "Idk if that was even correct, but I will let it slide. Run /about for more information about the bot."},
 						},
 					},
+					Flags: disgo.Pointer(disgo.FlagMessageEPHEMERAL),
 				}
 			} else {
 				failed := false
