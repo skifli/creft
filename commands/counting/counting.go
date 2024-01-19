@@ -121,7 +121,7 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 						},
 					}
 
-					database.DatabaseJSON["counting"].(map[string]any)[message.ChannelID] = map[string]any{"count": 0.0, "countMax": 0.0, "lastCountUserID": channelDatabase["lastCountUserID"].(string), "lastCountMessageID": channelDatabase["lastCountMessageID"].(string), "resetsCount": channelDatabase["resetsCount"].(float64) + 1}
+					database.DatabaseJSON["counting"].(map[string]any)[message.ChannelID] = map[string]any{"count": 0.0, "countMax": 0.0, "lastCountUserID": message.Author.ID, "lastCountMessageID": message.ID, "resetsCount": channelDatabase["resetsCount"].(float64) + 1}
 					database.Changed = true
 				} else {
 					channelDatabase["count"] = count
