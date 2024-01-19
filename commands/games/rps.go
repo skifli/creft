@@ -17,6 +17,35 @@ func HandleRPSInteraction(bot *disgo.Client, logger *golog.Logger, interaction *
 
 	game := games[gameID]
 
+	if game == nil {
+		response := &disgo.CreateInteractionResponse{
+			InteractionID:    interaction.ID,
+			InteractionToken: interaction.Token,
+			InteractionResponse: &disgo.InteractionResponse{
+				Type: disgo.FlagInteractionCallbackTypeCHANNEL_MESSAGE_WITH_SOURCE,
+				Data: &disgo.Messages{
+					Embeds: []*disgo.Embed{
+						{
+							Title:       disgo.Pointer("Error"),
+							Description: disgo.Pointer("Game *does not* **exist** anymore.\n It was *probably* created in a **previous session** of the bot."),
+							Color:       disgo.Pointer(13789294),
+							Footer:      &disgo.EmbedFooter{Text: "Run /about for more information about the bot."},
+						},
+					},
+					Flags: disgo.Pointer(disgo.FlagMessageEPHEMERAL),
+				},
+			},
+		}
+
+		if err := response.Send(bot); err != nil {
+			logger.Errorf("Failed to respond to an interaction: %s", err)
+		} else {
+			logger.Infof("Responded to an interaction from %s.", interaction.Member.User.Username)
+		}
+
+		return
+	}
+
 	choices := game["choices"].([]string)
 	players := game["players"].([]string)
 	token := game["token"].(string)
