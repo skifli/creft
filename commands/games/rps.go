@@ -180,11 +180,11 @@ func HandleRPSInteraction(bot *disgo.Client, logger *golog.Logger, interaction *
 		}
 
 		if _, ok := database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[0]]; !ok {
-			database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[0]] = map[string]any{"rps": map[string]any{"gamesPlayed": 0.0, "gamesWon": 0.0, "gamesLost": 0.0}}
+			database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[0]] = map[string]any{"rps": map[string]any{"gamesPlayed": 0.0, "gamesWon": 0.0, "gamesLost": 0.0, "gamesDrawn": 0.0}}
 		}
 
 		if _, ok := database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[1]]; !ok {
-			database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[1]] = map[string]any{"rps": map[string]any{"gamesPlayed": 0.0, "gamesWon": 0.0, "gamesLost": 0.0}}
+			database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[1]] = map[string]any{"rps": map[string]any{"gamesPlayed": 0.0, "gamesWon": 0.0, "gamesLost": 0.0, "gamesDrawn": 0.0}}
 		}
 
 		database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[0]].(map[string]any)["rps"].(map[string]any)["gamesPlayed"] = database.DatabaseJSON["games"].(map[string]any)["userStats"].(map[string]any)[players[0]].(map[string]any)["rps"].(map[string]any)["gamesPlayed"].(float64) + 1
