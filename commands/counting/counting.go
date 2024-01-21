@@ -35,7 +35,11 @@ func addCooldown(userID string) {
 }
 
 func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.MessageCreate) {
-	if checkIfOnCooldown(message.Author.ID) {
+	if message.Author.Bot != nil {
+		if *message.Author.Bot {
+			return
+		}
+	} else if checkIfOnCooldown(message.Author.ID) {
 		logger.Infof("Ignored a counting message from %s due to cooldown.", message.Author.Username)
 
 		return
