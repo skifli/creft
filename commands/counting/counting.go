@@ -5,6 +5,7 @@ import (
 	"math"
 	"runtime"
 	"strings"
+	"time"
 
 	"github.com/skifli/creft/database"
 
@@ -13,7 +14,33 @@ import (
 	"github.com/switchupcb/disgo"
 )
 
+const COOLDOWN_TIME_SECONDS = 5
+
+var messageTracker = make(map[string]time.Time)
+
+func checkIfOnCooldown(userID string) bool {
+	if _, ok := messageTracker[userID]; ok {
+		if time.Since(messageTracker[userID]) < time.Second*COOLDOWN_TIME_SECONDS {
+			return true
+		} else {
+			delete(messageTracker, userID)
+		}
+	}
+
+	return false
+}
+
+func addCooldown(userID string) {
+	messageTracker[userID] = time.Now()
+}
+
 func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.MessageCreate) {
+	if checkIfOnCooldown(message.Author.ID) {
+		logger.Infof("Ignored a counting message from %s due to cooldown.", message.Author.Username)
+
+		return
+	}
+
 	defer func() {
 		if r := recover(); r != nil {
 			var response *disgo.CreateMessage
@@ -81,12 +108,15 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 					Embeds: []*disgo.Embed{
 						{
 							Title:       disgo.Pointer("Please Wait"),
-							Description: disgo.Pointer("You **counted last**. Please wait for **someone else** to count!"),
+							Description: disgo.Pointer("You **counted last**. Please wait for **someone else** to count!\nYou now have a **5 second** cooldown."),
 							Color:       disgo.Pointer(6591981),
 							Footer:      &disgo.EmbedFooter{Text: "Idk if that was even correct, but I will let it slide. Run /about for more information about the bot."},
 						},
 					},
 				}
+
+				addCooldown(message.Author.ID)
+				logger.Infof("%s is now on a counting cooldown for %d seconds.", message.Author.Username, COOLDOWN_TIME_SECONDS)
 			} else {
 				failed := false
 				var value float64 = 0
