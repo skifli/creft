@@ -232,68 +232,89 @@ func HandleRPSInteraction(bot *disgo.Client, logger *golog.Logger, interaction *
 }
 
 func HandleRPSPlay(bot *disgo.Client, logger *golog.Logger, interaction *disgo.InteractionCreate, subCommands []*disgo.ApplicationCommandInteractionDataOption) {
-	if !startGame(bot, interaction, logger) {
-		return
-	}
+	var response *disgo.CreateInteractionResponse
 
-	gameID := interaction.Token[:10]
-
-	response := &disgo.CreateInteractionResponse{
-		InteractionID:    interaction.ID,
-		InteractionToken: interaction.Token,
-		InteractionResponse: &disgo.InteractionResponse{
-			Type: disgo.FlagInteractionCallbackTypeCHANNEL_MESSAGE_WITH_SOURCE,
-			Data: &disgo.Messages{
-				Embeds: []*disgo.Embed{
-					{
-						Title:       disgo.Pointer("Rock, Paper, Scissors"),
-						Description: disgo.Pointer(fmt.Sprintf("Choose your weapon <@%s>!", interaction.Member.User.ID)),
-						Color:       disgo.Pointer(6591981),
-						Footer:      &disgo.EmbedFooter{Text: "Run /about for more information about the bot."},
+	if interaction.Member.User.ID == subCommands[0].Options[0].Options[0].Value.String() {
+		response = &disgo.CreateInteractionResponse{
+			InteractionID:    interaction.ID,
+			InteractionToken: interaction.Token,
+			InteractionResponse: &disgo.InteractionResponse{
+				Type: disgo.FlagInteractionCallbackTypeCHANNEL_MESSAGE_WITH_SOURCE,
+				Data: &disgo.Messages{
+					Embeds: []*disgo.Embed{
+						{
+							Title:       disgo.Pointer("Error"),
+							Description: disgo.Pointer("You cannot play yourself!"),
+							Color:       disgo.Pointer(13789294),
+							Footer:      &disgo.EmbedFooter{Text: "Run /about for more information about the bot."},
+						},
 					},
+					Flags: disgo.Pointer(disgo.FlagMessageEPHEMERAL),
 				},
-				Components: []disgo.Component{
-					&disgo.ActionRow{
-						Type: disgo.FlagComponentTypeActionRow,
-						Components: []disgo.Component{
-							&disgo.Button{
-								Type:     disgo.FlagComponentTypeButton,
-								Style:    disgo.FlagButtonStylePRIMARY,
-								Label:    disgo.Pointer("Rock"),
-								CustomID: disgo.Pointer(fmt.Sprintf("games_rps_%s_rock", gameID)),
-								Emoji: &disgo.Emoji{
-									ID:   nil,
-									Name: disgo.Pointer("\U0001F5FB"),
+			},
+		}
+	} else if !startGame(bot, interaction, logger) {
+		return
+	} else {
+		gameID := interaction.Token[:10]
+
+		response = &disgo.CreateInteractionResponse{
+			InteractionID:    interaction.ID,
+			InteractionToken: interaction.Token,
+			InteractionResponse: &disgo.InteractionResponse{
+				Type: disgo.FlagInteractionCallbackTypeCHANNEL_MESSAGE_WITH_SOURCE,
+				Data: &disgo.Messages{
+					Embeds: []*disgo.Embed{
+						{
+							Title:       disgo.Pointer("Rock, Paper, Scissors"),
+							Description: disgo.Pointer(fmt.Sprintf("Choose your weapon <@%s>!", interaction.Member.User.ID)),
+							Color:       disgo.Pointer(6591981),
+							Footer:      &disgo.EmbedFooter{Text: "Run /about for more information about the bot."},
+						},
+					},
+					Components: []disgo.Component{
+						&disgo.ActionRow{
+							Type: disgo.FlagComponentTypeActionRow,
+							Components: []disgo.Component{
+								&disgo.Button{
+									Type:     disgo.FlagComponentTypeButton,
+									Style:    disgo.FlagButtonStylePRIMARY,
+									Label:    disgo.Pointer("Rock"),
+									CustomID: disgo.Pointer(fmt.Sprintf("games_rps_%s_rock", gameID)),
+									Emoji: &disgo.Emoji{
+										ID:   nil,
+										Name: disgo.Pointer("\U0001F5FB"),
+									},
 								},
-							},
-							&disgo.Button{
-								Type:     disgo.FlagComponentTypeButton,
-								Style:    disgo.FlagButtonStylePRIMARY,
-								Label:    disgo.Pointer("Paper"),
-								CustomID: disgo.Pointer(fmt.Sprintf("games_rps_%s_paper", gameID)),
-								Emoji: &disgo.Emoji{
-									ID:   nil,
-									Name: disgo.Pointer("\U0001F4DC"),
+								&disgo.Button{
+									Type:     disgo.FlagComponentTypeButton,
+									Style:    disgo.FlagButtonStylePRIMARY,
+									Label:    disgo.Pointer("Paper"),
+									CustomID: disgo.Pointer(fmt.Sprintf("games_rps_%s_paper", gameID)),
+									Emoji: &disgo.Emoji{
+										ID:   nil,
+										Name: disgo.Pointer("\U0001F4DC"),
+									},
 								},
-							},
-							&disgo.Button{
-								Type:     disgo.FlagComponentTypeButton,
-								Style:    disgo.FlagButtonStylePRIMARY,
-								Label:    disgo.Pointer("Scissors"),
-								CustomID: disgo.Pointer(fmt.Sprintf("games_rps_%s_scissors", gameID)),
-								Emoji: &disgo.Emoji{
-									ID:   nil,
-									Name: disgo.Pointer("\U00002702"),
+								&disgo.Button{
+									Type:     disgo.FlagComponentTypeButton,
+									Style:    disgo.FlagButtonStylePRIMARY,
+									Label:    disgo.Pointer("Scissors"),
+									CustomID: disgo.Pointer(fmt.Sprintf("games_rps_%s_scissors", gameID)),
+									Emoji: &disgo.Emoji{
+										ID:   nil,
+										Name: disgo.Pointer("\U00002702"),
+									},
 								},
 							},
 						},
 					},
 				},
 			},
-		},
-	}
+		}
 
-	games[gameID] = map[string]any{"game": "rps", "interaction": interaction, "choices": []string{}, "players": []string{interaction.Member.User.ID, subCommands[0].Options[0].Options[0].Value.String()}, "token": interaction.Token}
+		games[gameID] = map[string]any{"game": "rps", "interaction": interaction, "choices": []string{}, "players": []string{interaction.Member.User.ID, subCommands[0].Options[0].Options[0].Value.String()}, "token": interaction.Token}
+	}
 
 	if err := response.Send(bot); err != nil {
 		logger.Errorf("Failed to respond to an interaction: %s", err)
