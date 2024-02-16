@@ -247,6 +247,8 @@ func HandleRPSPlay(bot *disgo.Client, logger *golog.Logger, interaction *disgo.I
 		return
 	}
 
+	delete(users, interaction.Member.User.ID)
+
 	if interaction.Member.User.ID == targetUserID {
 		response = &disgo.CreateInteractionResponse{
 			InteractionID:    interaction.ID,
