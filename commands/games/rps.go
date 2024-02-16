@@ -234,7 +234,20 @@ func HandleRPSInteraction(bot *disgo.Client, logger *golog.Logger, interaction *
 func HandleRPSPlay(bot *disgo.Client, logger *golog.Logger, interaction *disgo.InteractionCreate, subCommands []*disgo.ApplicationCommandInteractionDataOption) {
 	var response *disgo.CreateInteractionResponse
 
-	if interaction.Member.User.ID == subCommands[0].Options[0].Options[0].Value.String() {
+	targetUserID := subCommands[0].Options[0].Options[0].Value.String()
+
+	targetUser := disgo.GetUser(disgo.GetUser{
+		UserID: targetUserID,
+	})
+
+	target, err := targetUser.Send(bot)
+
+	if err != nil {
+		logger.Errorf("Failed to get user: %s", err)
+		return
+	}
+
+	if interaction.Member.User.ID == targetUserID {
 		response = &disgo.CreateInteractionResponse{
 			InteractionID:    interaction.ID,
 			InteractionToken: interaction.Token,
@@ -258,8 +271,8 @@ func HandleRPSPlay(bot *disgo.Client, logger *golog.Logger, interaction *disgo.I
 	} else {
 		bot := false
 
-		if interaction.Message.Author.Bot != nil {
-			if *interaction.Message.Author.Bot {
+		if target.Bot != nil {
+			if *target.Bot {
 				bot = true
 			}
 		}
