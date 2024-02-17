@@ -173,7 +173,7 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 					reaction := &disgo.CreateReaction{
 						ChannelID: message.ChannelID,
 						MessageID: message.ID,
-						Emoji:     "\U00002705",
+						Emoji:     "tick:1208365324076974201",
 					}
 
 					if err := reaction.Send(bot); err != nil {
