@@ -135,6 +135,8 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 					failed = true
 				}
 
+				channelDatabase["lastCountMessageEdited"] = false
+
 				count := channelDatabase["count"].(float64) + 1.0
 
 				if failed || value != count {
@@ -155,7 +157,7 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 						},
 					}
 
-					database.DatabaseJSON["counting"].(map[string]any)[message.ChannelID] = map[string]any{"count": 0.0, "countMax": channelDatabase["countMax"].(float64), "lastCountUserID": message.Author.ID, "lastCountMessageID": message.ID, "resetsCount": channelDatabase["resetsCount"].(float64) + 1}
+					database.DatabaseJSON["counting"].(map[string]any)[message.ChannelID] = map[string]any{"count": 0.0, "countMax": channelDatabase["countMax"].(float64), "lastCountUserID": message.Author.ID, "lastCountMessageID": message.ID, "lastCountMessageEdited": false, "resetsCount": channelDatabase["resetsCount"].(float64) + 1}
 					database.Changed = true
 				} else {
 					channelDatabase["count"] = count
@@ -212,6 +214,40 @@ func onMessageDelete(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 				logger.Errorf("Failed to respond to a deleted message: %s", err)
 			} else {
 				logger.Infof("Responded to a deleted message from %s.", channelDatabase["lastCountMessageAuthor"])
+			}
+		}
+	}
+}
+
+func onMessageUpdate(bot *disgo.Client, logger *golog.Logger, message *disgo.MessageUpdate) {
+	if channelDatabase, ok := database.DatabaseJSON["counting"].(map[string]any)[message.ChannelID].(map[string]any); ok {
+		if channelDatabase["lastCountMessageID"] == message.Message.ID {
+			if channelDatabase["lastCountMessageEdited"] == false {
+				response := &disgo.CreateMessage{
+					ChannelID: message.ChannelID,
+					Embeds: []*disgo.Embed{
+						{
+							Title:       disgo.Pointer("I saw that"),
+							Description: disgo.Pointer(fmt.Sprintf("<@%s> **edited** their message. The count is at **`%.0f`**.", channelDatabase["lastCountUserID"], channelDatabase["count"])),
+							Color:       disgo.Pointer(6591981),
+							Footer:      &disgo.EmbedFooter{Text: "Cheeky! Run /about for more information about the bot."},
+						},
+					},
+					MessageReference: disgo.Pointer(disgo.MessageReference{
+						MessageID: disgo.Pointer(message.Message.ID),
+						ChannelID: disgo.Pointer(message.ChannelID),
+						GuildID:   message.GuildID,
+					}),
+				}
+
+				channelDatabase["lastCountMessageEdited"] = true
+				database.Changed = true
+
+				if _, err := response.Send(bot); err != nil {
+					logger.Errorf("Failed to respond to an edited message: %s", err)
+				} else {
+					logger.Infof("Responded to an edited message from %s.", message.Message.Author.Username)
+				}
 			}
 		}
 	}
@@ -292,6 +328,8 @@ func Init(bot *disgo.Client, logger *golog.Logger) {
 	if err := bot.Handle(disgo.FlagGatewayEventNameMessageCreate, func(message *disgo.MessageCreate) { onMessageCreate(bot, logger, message) }); err != nil {
 		logger.Fatalf("Failed to add event handler to bot: %s", err)
 	} else if err := bot.Handle(disgo.FlagGatewayEventNameMessageDelete, func(message *disgo.MessageDelete) { onMessageDelete(bot, logger, message) }); err != nil {
+		logger.Fatalf("Failed to add event handler to bot: %s", err)
+	} else if err := bot.Handle(disgo.FlagGatewayEventNameMessageUpdate, func(message *disgo.MessageUpdate) { onMessageUpdate(bot, logger, message) }); err != nil {
 		logger.Fatalf("Failed to add event handler to bot: %s", err)
 	}
 }
