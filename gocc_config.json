@@ -1,6 +1,6 @@
 {
     "mode": "allow",
     "targets": [
-        "windows/*"
+        "windows/amd64"
     ]
 }

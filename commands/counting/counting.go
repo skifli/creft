@@ -117,6 +117,7 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 							Footer:      &disgo.EmbedFooter{Text: "Idk if that was even correct, but I will let it slide. Run /about for more information about the bot."},
 						},
 					},
+					Flags: disgo.Pointer(disgo.FlagMessageEPHEMERAL),
 				}
 
 				addCooldown(message.Author.ID)
@@ -173,7 +174,7 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 					reaction := &disgo.CreateReaction{
 						ChannelID: message.ChannelID,
 						MessageID: message.ID,
-						Emoji:     "tick:1208365324076974201",
+						Emoji:     "✅",
 					}
 
 					if err := reaction.Send(bot); err != nil {
