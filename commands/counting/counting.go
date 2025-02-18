@@ -34,6 +34,21 @@ func addCooldown(userID string) {
 	messageTracker[userID] = time.Now()
 }
 
+func deleteMessageAfterDelay(bot *disgo.Client, logger *golog.Logger, channelID string, messageID string, delay time.Duration) {
+	time.Sleep(delay)
+
+	deleteMessage := &disgo.DeleteMessage{
+		ChannelID: channelID,
+		MessageID: messageID,
+	}
+
+	if err := deleteMessage.Send(bot); err != nil {
+		logger.Errorf("Failed to delete a message after delay: %s", err)
+	} else {
+		logger.Infof("Deleted a message with ID %s from channel %s after delay.", messageID, channelID)
+	}
+}
+
 func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.MessageCreate) {
 	if message.Author.Bot != nil {
 		if *message.Author.Bot {
@@ -53,11 +68,6 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 			if strings.Contains(r.(runtime.Error).Error(), "integer divide by zero") {
 				response = &disgo.CreateMessage{
 					ChannelID: message.ChannelID,
-					MessageReference: &disgo.MessageReference{
-						MessageID: disgo.Pointer(message.ID),
-						ChannelID: disgo.Pointer(message.ChannelID),
-						GuildID:   message.GuildID,
-					},
 					Embeds: []*disgo.Embed{
 						{
 							Title:       disgo.Pointer("Cheeky"),
@@ -66,16 +76,10 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 							Footer:      &disgo.EmbedFooter{Text: "Nothing eventful happened. Run /about for more information about the bot."},
 						},
 					},
-					Flags: disgo.Pointer(disgo.FlagMessageEPHEMERAL),
 				}
 			} else {
 				response = &disgo.CreateMessage{
 					ChannelID: message.ChannelID,
-					MessageReference: &disgo.MessageReference{
-						MessageID: disgo.Pointer(message.ID),
-						ChannelID: disgo.Pointer(message.ChannelID),
-						GuildID:   message.GuildID,
-					},
 					Embeds: []*disgo.Embed{
 						{
 							Title:       disgo.Pointer("Error"),
@@ -84,11 +88,12 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 							Footer:      &disgo.EmbedFooter{Text: "Run /about for more information about the bot."},
 						},
 					},
-					Flags: disgo.Pointer(disgo.FlagMessageEPHEMERAL),
 				}
 			}
 
-			if _, err := response.Send(bot); err != nil {
+			sentMessage, err := response.Send(bot)
+
+			if err != nil {
 				logger.Errorf("Failed to respond to a message: %s", err)
 			} else {
 				logger.Infof("Responded to a message from %s.", message.Author.Username)
@@ -104,6 +109,8 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 			} else {
 				logger.Infof("Deleted a message from %s.", message.Author.Username)
 			}
+
+			go deleteMessageAfterDelay(bot, logger, message.ChannelID, sentMessage.ID, time.Second*5)
 		}
 	}()
 
@@ -111,17 +118,9 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 		expression := goval.NewEvaluator()
 
 		if result, err := expression.Evaluate(message.Content, nil, nil); err == nil {
-			var response *disgo.CreateMessage
-			response = nil
-
 			if message.Author.ID == channelDatabase["lastCountUserID"] {
-				response = &disgo.CreateMessage{
+				response := &disgo.CreateMessage{
 					ChannelID: message.ChannelID,
-					MessageReference: &disgo.MessageReference{
-						MessageID: disgo.Pointer(message.ID),
-						ChannelID: disgo.Pointer(message.ChannelID),
-						GuildID:   message.GuildID,
-					},
 					Embeds: []*disgo.Embed{
 						{
 							Title:       disgo.Pointer("Please Wait"),
@@ -146,6 +145,16 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 				} else {
 					logger.Infof("Deleted a message from %s.", message.Author.Username)
 				}
+
+				sentMessage, err := response.Send(bot)
+
+				if err != nil {
+					logger.Errorf("Failed to respond to a message: %s", err)
+				} else {
+					logger.Infof("Responded to a message from %s.", message.Author.Username)
+				}
+
+				go deleteMessageAfterDelay(bot, logger, message.ChannelID, sentMessage.ID, time.Second*5)
 			} else {
 				failed := false
 				var value float64 = 0
@@ -165,6 +174,9 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 				count := channelDatabase["count"].(float64) + 1.0
 
 				var emoji string
+
+				var response *disgo.CreateMessage
+				response = nil
 
 				if failed || value != count {
 					response = &disgo.CreateMessage{
@@ -212,13 +224,13 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 				} else {
 					logger.Infof("Reacted to a message from %s.", message.Author.Username)
 				}
-			}
 
-			if response != nil {
-				if _, err := response.Send(bot); err != nil {
-					logger.Errorf("Failed to respond to a message: %s", err)
-				} else {
-					logger.Infof("Responded to a message from %s.", message.Author.Username)
+				if response != nil {
+					if _, err := response.Send(bot); err != nil {
+						logger.Errorf("Failed to respond to a message: %s", err)
+					} else {
+						logger.Infof("Responded to a message from %s.", message.Author.Username)
+					}
 				}
 			}
 		}
