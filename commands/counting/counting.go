@@ -66,6 +66,7 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 							Footer:      &disgo.EmbedFooter{Text: "Nothing eventful happened. Run /about for more information about the bot."},
 						},
 					},
+					Flags: disgo.Pointer(disgo.FlagMessageEPHEMERAL),
 				}
 			} else {
 				response = &disgo.CreateMessage{
@@ -83,6 +84,7 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 							Footer:      &disgo.EmbedFooter{Text: "Run /about for more information about the bot."},
 						},
 					},
+					Flags: disgo.Pointer(disgo.FlagMessageEPHEMERAL),
 				}
 			}
 
@@ -90,6 +92,17 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 				logger.Errorf("Failed to respond to a message: %s", err)
 			} else {
 				logger.Infof("Responded to a message from %s.", message.Author.Username)
+			}
+
+			deleteMessage := &disgo.DeleteMessage{
+				ChannelID: message.ChannelID,
+				MessageID: message.ID,
+			}
+
+			if err := deleteMessage.Send(bot); err != nil {
+				logger.Errorf("Failed to delete a message: %s", err)
+			} else {
+				logger.Infof("Deleted a message from %s.", message.Author.Username)
 			}
 		}
 	}()
@@ -122,6 +135,17 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 
 				addCooldown(message.Author.ID)
 				logger.Infof("%s is now on a counting cooldown for %d seconds.", message.Author.Username, COOLDOWN_TIME_SECONDS)
+
+				deleteMessage := &disgo.DeleteMessage{
+					ChannelID: message.ChannelID,
+					MessageID: message.ID,
+				}
+
+				if err := deleteMessage.Send(bot); err != nil {
+					logger.Errorf("Failed to delete a message: %s", err)
+				} else {
+					logger.Infof("Deleted a message from %s.", message.Author.Username)
+				}
 			} else {
 				failed := false
 				var value float64 = 0
@@ -139,6 +163,8 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 				channelDatabase["lastCountMessageEdited"] = false
 
 				count := channelDatabase["count"].(float64) + 1.0
+
+				var emoji string
 
 				if failed || value != count {
 					response = &disgo.CreateMessage{
@@ -160,6 +186,8 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 
 					database.DatabaseJSON["counting"].(map[string]any)[message.ChannelID] = map[string]any{"count": 0.0, "countMax": channelDatabase["countMax"].(float64), "lastCountUserID": message.Author.ID, "lastCountMessageID": message.ID, "lastCountMessageEdited": false, "resetsCount": channelDatabase["resetsCount"].(float64) + 1}
 					database.Changed = true
+
+					emoji = "❌"
 				} else {
 					channelDatabase["count"] = count
 					channelDatabase["lastCountUserID"] = message.Author.ID
@@ -170,18 +198,19 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 					}
 
 					database.Changed = true
+					emoji = "✅"
+				}
 
-					reaction := &disgo.CreateReaction{
-						ChannelID: message.ChannelID,
-						MessageID: message.ID,
-						Emoji:     "✅",
-					}
+				reaction := &disgo.CreateReaction{
+					ChannelID: message.ChannelID,
+					MessageID: message.ID,
+					Emoji:     emoji,
+				}
 
-					if err := reaction.Send(bot); err != nil {
-						logger.Errorf("Failed to react to a message: %s", err)
-					} else {
-						logger.Infof("Reacted to a message from %s.", message.Author.Username)
-					}
+				if err := reaction.Send(bot); err != nil {
+					logger.Errorf("Failed to react to a message: %s", err)
+				} else {
+					logger.Infof("Reacted to a message from %s.", message.Author.Username)
 				}
 			}
 
@@ -248,6 +277,18 @@ func onMessageUpdate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 					logger.Errorf("Failed to respond to an edited message: %s", err)
 				} else {
 					logger.Infof("Responded to an edited message from %s.", message.Message.Author.Username)
+				}
+
+				reaction := &disgo.CreateReaction{
+					ChannelID: message.ChannelID,
+					MessageID: message.Message.ID,
+					Emoji:     "🗿",
+				}
+
+				if err := reaction.Send(bot); err != nil {
+					logger.Errorf("Failed to react to an edited message: %s", err)
+				} else {
+					logger.Infof("Reacted to an edited message from %s.", message.Message.Author.Username)
 				}
 			}
 		}
