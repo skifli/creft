@@ -189,7 +189,7 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 						Embeds: []*disgo.Embed{
 							{
 								Title:       disgo.Pointer("Incorrect"),
-								Description: disgo.Pointer(fmt.Sprintf("The correct number was **`%0.f`**, but you said **`%0.f`**. The count has reset to **`0`**.", count, value)),
+								Description: disgo.Pointer(fmt.Sprintf("Sorry <@%s> - the correct number was **`%0.f`**, but you said **`%0.f`**. The count has reset to **`0`**.", message.Author.ID, count, value)),
 								Color:       disgo.Pointer(13789294),
 								Footer:      &disgo.EmbedFooter{Text: "RIP streak. Run /about for more information about the bot."},
 							},
