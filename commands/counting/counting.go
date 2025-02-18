@@ -71,7 +71,7 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 					Embeds: []*disgo.Embed{
 						{
 							Title:       disgo.Pointer("Cheeky"),
-							Description: disgo.Pointer("Imagine trying to divide by **`0`**. Couldn't be you.\nThe count has stayed the same."),
+							Description: disgo.Pointer(fmt.Sprintf("Imagine trying to divide by **`0`**. Couldn't be <@%s>.\nThe count has stayed the same.", message.Author.ID)),
 							Color:       disgo.Pointer(6591981),
 							Footer:      &disgo.EmbedFooter{Text: "Nothing eventful happened. Run /about for more information about the bot."},
 						},
@@ -83,7 +83,7 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 					Embeds: []*disgo.Embed{
 						{
 							Title:       disgo.Pointer("Error"),
-							Description: disgo.Pointer(fmt.Sprintf("An unknown error occurred: **`%s`**.\nThe count has stayed the same.", r.(string))),
+							Description: disgo.Pointer(fmt.Sprintf("An unknown error occurred <@%s>: **`%s`**.\nThe count has stayed the same.", message.Author.ID, r.(string))),
 							Color:       disgo.Pointer(13789294),
 							Footer:      &disgo.EmbedFooter{Text: "Run /about for more information about the bot."},
 						},
@@ -124,7 +124,7 @@ func onMessageCreate(bot *disgo.Client, logger *golog.Logger, message *disgo.Mes
 					Embeds: []*disgo.Embed{
 						{
 							Title:       disgo.Pointer("Please Wait"),
-							Description: disgo.Pointer("You **counted last**. Please wait for **someone else** to count!\nYou now have a **5 second** cooldown."),
+							Description: disgo.Pointer(fmt.Sprintf("You **counted last** <@%s>. Please wait for **someone else** to count!\nYou now have a **5 second** cooldown.", message.Author.ID)),
 							Color:       disgo.Pointer(6591981),
 							Footer:      &disgo.EmbedFooter{Text: "Idk if that was even correct, but I will let it slide. Run /about for more information about the bot."},
 						},
