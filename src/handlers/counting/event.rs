@@ -32,7 +32,10 @@ pub async fn message_create(
                     utils::embeds::create(
                         serenity::Colour::new(13789294),
                         "Error",
-                        &format!("Sorry <@{}>, you can't count twice in a row.", author_id),
+                        &format!(
+                            "Sorry <@{}>, you can't count **twice** in a *row*.",
+                            author_id
+                        ),
                     ),
                     utils::message::MESSAGE_DELETE_DELAY,
                 )
@@ -70,7 +73,7 @@ pub async fn message_create(
                                 serenity::Colour::new(13789294),
                                 "Error",
                                 &format!(
-                                    "Sorry <@{}> - the correct number was **`{}`**, but you said **`{}`**.\nThe count has reset to **`0`**.",
+                                    "Sorry <@{}> - the *correct* number was `{}`, but *you* said `{}`.\nThe count has *reset* to `0`.",
                                     author_id,
                                     counting_channel.count+1,
                                     result,
@@ -124,7 +127,7 @@ pub async fn message_delete(
                         serenity::Colour::new(6591981),
                         "I saw that",
                         &format!(
-                            "<@{}> **deleted** their message. The count is at **`{}`**.",
+                            "<@{}> **deleted** their message. The count is at `{}`.",
                             counting_channel.last_count_user_id, counting_channel.count
                         ),
                     )),
@@ -176,7 +179,7 @@ pub async fn message_update(
                             serenity::Colour::new(6591981),
                             "I saw that",
                             &format!(
-                                "<@{}> **edited** their message. The count is at **`{}`**.",
+                                "<@{}> **edited** their message. The count is at `{}`.",
                                 counting_channel.last_count_user_id, counting_channel.count
                             ),
                         ))
