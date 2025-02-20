@@ -1,4 +1,3 @@
-pub mod cooldown;
 pub mod database;
 pub mod embeds;
 pub mod message;
@@ -6,8 +5,6 @@ pub mod message;
 pub type Context<'a> = poise::Context<'a, ServerData, Error>;
 
 pub struct ServerData {
-    pub cooldowns:
-        std::sync::Arc<std::sync::Mutex<std::collections::HashMap<i64, std::time::Instant>>>,
     pub pool: sqlx::PgPool,
 }
 

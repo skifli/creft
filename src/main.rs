@@ -31,10 +31,7 @@ async fn main(
             Box::pin(async move {
                 poise::builtins::register_globally(context, &framework.options().commands).await?;
 
-                Ok(utils::ServerData {
-                    cooldowns: Default::default(),
-                    pool,
-                })
+                Ok(utils::ServerData { pool })
             })
         })
         .build();
