@@ -18,27 +18,27 @@ pub async fn message_create(
     let counting_channel = utils::database::get_counting_channel(pool, channel_id).await?;
 
     if let Some(mut counting_channel) = counting_channel {
-        if utils::cooldown::check_if_on(data, author_id) {
-            utils::message::delete_after(context, message, 0);
+        let expression = pemel::prelude::Expr::parse(message.content.as_str(), false);
 
-            utils::message::send_and_delete(
-                context,
-                message.channel_id,
-                utils::embeds::create(
-                    serenity::Colour::new(13789294),
-                    "Error",
-                    &format!(
-                        "Sorry <@{}>, you are on cooldown. Please wait a bit before sending another message.",
-                        author_id,
+        if let Ok(expression) = expression {
+            if utils::cooldown::check_if_on(data, author_id) {
+                utils::message::delete_after(context, message, 0);
+
+                utils::message::send_and_delete(
+                    context,
+                    message.channel_id,
+                    utils::embeds::create(
+                        serenity::Colour::new(13789294),
+                        "Error",
+                        &format!(
+                            "Sorry <@{}>, you are on cooldown. Please wait a bit before sending another message.",
+                            author_id,
+                        ),
                     ),
-                ),
-                utils::message::MESSAGE_DELETE_DELAY,
-            )
-            .await;
-        } else {
-            let expression = pemel::prelude::Expr::parse(message.content.as_str(), false);
-
-            if let Ok(expression) = expression {
+                    utils::message::MESSAGE_DELETE_DELAY,
+                )
+                .await;
+            } else {
                 let result = expression.eval_const();
 
                 if counting_channel.last_count_user_id == author_id {
@@ -129,9 +129,9 @@ pub async fn message_create(
                     )
                     .await;
                 }
-            } else {
-                utils::message::delete_after(context, message, 0);
             }
+        } else {
+            utils::message::delete_after(context, message, 0);
         }
     }
 
