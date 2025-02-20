@@ -1,1 +1,0 @@
-./gocc creft.go -c "gocc_config.json"

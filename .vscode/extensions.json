@@ -1,18 +1,13 @@
 {
     "recommendations": [
-        "albert.tabout",
         "alexanderte.dainty-one-dark-pro-vscode",
-        "christian-kohler.path-intellisense",
-        "donjayamanne.githistory",
-        "github.copilot",
-        "github.copilot-chat",
-        "github.copilot-labs",
-        "golang.go",
+        "bierner.markdown-preview-github-styles",
         "gruntfuggly.todo-tree",
-        "leonardssh.vscord",
-        "mhutchie.git-graph",
         "pkief.material-icon-theme",
-        "redhat.vscode-yaml",
+        "rust-lang.rust-analyzer",
+        "streetsidesoftware.code-spell-checker",
+        "streetsidesoftware.code-spell-checker-british-english",
         "wakatime.vscode-wakatime",
+        "yzhang.markdown-all-in-one",
     ]
 }

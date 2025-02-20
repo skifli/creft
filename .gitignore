@@ -18,8 +18,5 @@
 go.work
 
 # Custom
-_config.json
-database.json
-creft
-build
-gocc
+target
+Secrets.toml
