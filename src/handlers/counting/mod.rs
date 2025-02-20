@@ -49,7 +49,11 @@ pub async fn add(
     }
 
     context
-        .send(poise::CreateReply::default().embed(embed).ephemeral(true))
+        .send(
+            poise::CreateReply::default()
+                .embed(embed.clone())
+                .ephemeral(true),
+        )
         .await?;
 
     Ok(())
@@ -141,24 +145,28 @@ pub async fn channel(
     let pool = crate::utils::get_pool(&context);
     let channel_id = i64::from(channel.id());
 
-    let results = sqlx::query_as::<_, crate::utils::database::CountingStats>(
-        "SELECT * FROM counting_stats WHERE channel_id = $1",
-    )
-    .bind(channel_id)
-    .fetch_all(pool)
-    .await;
+    let result = crate::utils::database::get_counting_channel(pool, channel_id).await?;
 
-    let mut embed = crate::utils::embeds::create(
-        serenity::Colour::new(6591981),
-        &format!("Stats for <#{}>", channel_id),
-        "",
-    );
+    let embed;
 
-    for result in results? {
-        embed = embed.field(
-            "",
-            format!("__Stats for <@{}>__:\n* **Correct** Counts: `{}`.\n* **Incorrect** Counts: `{}`.\n* **Deleted** Counts: `{}`.\n* **Edited** Counts: `{}`.", result.user_id, result.correct, result.incorrect, result.deleted_count_message, result.edited_count_message),
-            true,
+    if result.is_none() {
+        embed = crate::utils::embeds::create(
+            serenity::Colour::new(13789294),
+            "Error",
+            format!("<#{}> is not a counting channel.", channel_id).as_str(),
+        );
+    } else {
+        let result = result.unwrap();
+
+        embed = crate::utils::embeds::create(
+            serenity::Colour::new(6591981),
+            format!("Stats for <#{}>", channel_id).as_str(),
+            format!(
+                "The last user to count was <@{}> at [this message](https://discord.com/channels/{}/{}/{}).\n* **Current Count**: `{}`.\n* **Max Count**: `{}`.\n* **Resets Count**: `{}`.",
+                result.last_count_user_id, context.guild_id().unwrap(), channel_id, result.last_count_message_id,
+                result.count, result.count_max, result.resets_count
+            )
+            .as_str(),
         );
     }
 
