@@ -29,7 +29,9 @@ async fn main(
         })
         .setup(|context, _ready, framework| {
             Box::pin(async move {
-                poise::builtins::register_globally(context, &framework.options().commands).await?;
+                poise::builtins::register_globally(context, &framework.options().commands)
+                    .await
+                    .expect("Failed to register commands");
 
                 Ok(utils::ServerData { pool })
             })
@@ -42,7 +44,8 @@ async fn main(
     )
     .framework(framework)
     .await
-    .map_err(shuttle_runtime::CustomError::new)?;
+    .map_err(shuttle_runtime::CustomError::new)
+    .expect("Failed to build client");
 
     Ok(client.into())
 }

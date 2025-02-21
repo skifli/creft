@@ -13,21 +13,32 @@ pub async fn event_handler(
             println!("Logged in as {}.", data_about_bot.user.name);
         }
         serenity::FullEvent::Message { new_message } => {
-            counting::event::message_create(ctx, new_message, data).await?;
+            counting::event::message_create(ctx, new_message, data)
+                .await
+                .expect("Failed to execute counting message_create handler");
         }
         serenity::FullEvent::MessageDelete {
             channel_id,
             deleted_message_id,
             guild_id: _,
         } => {
-            counting::event::message_delete(ctx, *channel_id, *deleted_message_id, data).await?;
+            counting::event::message_delete(ctx, *channel_id, *deleted_message_id, data)
+                .await
+                .expect("Failed to execute counting message_delete handler");
         }
         serenity::FullEvent::MessageUpdate {
             old_if_available: _,
             new,
             event: _,
         } => {
-            counting::event::message_update(ctx, new, data).await?;
+            counting::event::message_update(ctx, new, data)
+                .await
+                .expect("Failed to execute counting message_update handler");
+        }
+        serenity::FullEvent::ReactionAdd { add_reaction } => {
+            counting::event::reaction_add(ctx, add_reaction, data)
+                .await
+                .expect("Failed to execute counting reaction_add handler");
         }
         _ => {}
     }

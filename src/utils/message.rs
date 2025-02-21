@@ -1,5 +1,12 @@
 use poise::serenity_prelude as serenity;
 
+pub async fn delete(context: &serenity::Context, message: &serenity::Message) {
+    if let Err(why) = message.delete(context).await {
+        eprintln!("Error deleting message: {:?}", why);
+    }
+}
+
+/*
 pub const MESSAGE_DELETE_DELAY: u64 = 5000;
 
 pub fn delete_after(context: &serenity::Context, message: &serenity::Message, delay: u64) {
@@ -14,7 +21,9 @@ pub fn delete_after(context: &serenity::Context, message: &serenity::Message, de
         }
     });
 }
+*/
 
+/*
 pub async fn send_and_delete(
     context: &serenity::Context,
     channel_id: serenity::ChannelId,
@@ -28,6 +37,7 @@ pub async fn send_and_delete(
 
     delete_after(context, &sent_message, delay);
 }
+*/
 
 pub async fn send_with_reference(
     context: &serenity::Context,

@@ -24,24 +24,33 @@ pub async fn add(
     let embed;
 
     if crate::utils::database::is_admin(
-        &crate::utils::database::cache_admins(pool, guild_id).await?,
+        &crate::utils::database::cache_admins(pool, guild_id)
+            .await
+            .expect("Failed to cache admins in handlers/counting@add"),
         author_id,
     ) {
         let channel_id = i64::from(channel.id());
 
-        if crate::utils::database::counting_channel_exists(pool, channel_id).await? {
+        if crate::utils::database::counting_channel_exists(pool, channel_id)
+            .await
+            .expect("Failed to check if counting channel exists in handlers/counting@add")
+        {
             embed = crate::utils::embeds::create(
                 serenity::Colour::new(13789294),
                 "Error",
                 format!("<#{}> is already a counting channel.", channel_id).as_str(),
+                true,
             );
         } else {
-            crate::utils::database::add_counting_channel(pool, channel_id, guild_id).await?;
+            crate::utils::database::add_counting_channel(pool, channel_id, guild_id)
+                .await
+                .expect("Failed to add counting channel in handlers/counting@add");
 
             embed = crate::utils::embeds::create(
                 serenity::Colour::new(5082199),
                 "Success",
                 format!("<#{}> is now a counting channel.", channel_id).as_str(),
+                true,
             );
         }
     } else {
@@ -54,7 +63,8 @@ pub async fn add(
                 .embed(embed.clone())
                 .ephemeral(true),
         )
-        .await?;
+        .await
+        .expect("Failed to send message in handlers/counting@add");
 
     Ok(())
 }
@@ -64,7 +74,9 @@ pub async fn list(context: utils::Context<'_>) -> Result<(), utils::Error> {
     let pool = crate::utils::get_pool(&context);
     let guild_id = crate::utils::get_guild_id(&context);
 
-    let counting_channels = crate::utils::database::cache_counting_channels(pool, guild_id).await?;
+    let counting_channels = crate::utils::database::cache_counting_channels(pool, guild_id)
+        .await
+        .expect("Failed to cache counting channels in handlers/counting@list");
 
     let embed = crate::utils::embeds::create(
         serenity::Colour::new(5082199),
@@ -75,11 +87,13 @@ pub async fn list(context: utils::Context<'_>) -> Result<(), utils::Error> {
             .collect::<Vec<String>>()
             .join("\n")
             .as_str(),
+        true,
     );
 
     context
         .send(poise::CreateReply::default().embed(embed).ephemeral(true))
-        .await?;
+        .await
+        .expect("Failed to send message in handlers/counting@list");
 
     Ok(())
 }
@@ -96,24 +110,33 @@ pub async fn remove(
     let embed;
 
     if crate::utils::database::is_admin(
-        &crate::utils::database::cache_admins(pool, guild_id).await?,
+        &crate::utils::database::cache_admins(pool, guild_id)
+            .await
+            .expect("Failed to cache admins in handlers/counting@remove"),
         author_id,
     ) {
         let channel_id = i64::from(channel.id());
 
-        if crate::utils::database::counting_channel_exists(pool, channel_id).await? {
-            crate::utils::database::remove_counting_channel(pool, channel_id).await?;
+        if crate::utils::database::counting_channel_exists(pool, channel_id)
+            .await
+            .expect("Failed to check if counting channel exists in handlers/counting@remove")
+        {
+            crate::utils::database::remove_counting_channel(pool, channel_id)
+                .await
+                .expect("Failed to remove counting channel in handlers/counting@remove");
 
             embed = crate::utils::embeds::create(
                 serenity::Colour::new(5082199),
                 "Success",
                 format!("<#{}> is no longer a counting channel.", channel_id).as_str(),
+                true,
             );
         } else {
             embed = crate::utils::embeds::create(
                 serenity::Colour::new(13789294),
                 "Error",
                 format!("<#{}> is not a counting channel.", channel_id).as_str(),
+                true,
             );
         }
     } else {
@@ -122,7 +145,8 @@ pub async fn remove(
 
     context
         .send(poise::CreateReply::default().embed(embed).ephemeral(true))
-        .await?;
+        .await
+        .expect("Failed to send message in handlers/counting@remove");
 
     Ok(())
 }
@@ -145,7 +169,9 @@ pub async fn channel(
     let pool = crate::utils::get_pool(&context);
     let channel_id = i64::from(channel.id());
 
-    let result = crate::utils::database::get_counting_channel(pool, channel_id).await?;
+    let result = crate::utils::database::get_counting_channel(pool, channel_id)
+        .await
+        .expect("Failed to get counting channel in handlers/counting@channel");
 
     let embed;
 
@@ -154,6 +180,7 @@ pub async fn channel(
             serenity::Colour::new(13789294),
             "Error",
             format!("<#{}> is not a counting channel.", channel_id).as_str(),
+            true,
         );
     } else {
         let result = result.unwrap();
@@ -167,12 +194,14 @@ pub async fn channel(
                 result.count, result.count_max, result.resets_count
             )
             .as_str(),
+            true
         );
     }
 
     context
         .send(poise::CreateReply::default().embed(embed).ephemeral(true))
-        .await?;
+        .await
+        .expect("Failed to send message in handlers/counting@channel");
 
     Ok(())
 }
@@ -193,9 +222,10 @@ pub async fn guild(context: utils::Context<'_>) -> Result<(), utils::Error> {
         serenity::Colour::new(6591981),
         format!("Stats for **{}**", context.guild().unwrap().name).as_str(),
         "",
+        true,
     );
 
-    for result in results? {
+    for result in results.expect("Failed to get results in handlers/counting@guild") {
         embed = embed.field(
             "",
             format!("__Stats for <@{}>__:\n* **Correct** Counts: `{}`.\n* **Incorrect** Counts: `{}`.\n* **Deleted** Counts: `{}`.\n* **Edited** Counts: `{}`.", result.user_id, result.correct, result.incorrect, result.deleted_count_message, result.edited_count_message),
@@ -205,7 +235,8 @@ pub async fn guild(context: utils::Context<'_>) -> Result<(), utils::Error> {
 
     context
         .send(poise::CreateReply::default().embed(embed).ephemeral(true))
-        .await?;
+        .await
+        .expect("Failed to send message in handlers/counting@guild");
 
     Ok(())
 }
@@ -222,9 +253,9 @@ pub async fn user(context: utils::Context<'_>, user: serenity::User) -> Result<(
     .fetch_all(pool)
     .await;
 
-    let mut embed = crate::utils::embeds::create(serenity::Colour::new(6591981), "Stats", "");
+    let mut embed = crate::utils::embeds::create(serenity::Colour::new(6591981), "Stats", "", true);
 
-    for result in results? {
+    for result in results.expect("Failed to get results in handlers/counting@user") {
         embed = embed.field(
             "",
             format!("__Stats for <#{}>__:\n* **Correct** Counts: `{}`.\n* **Incorrect** Counts: `{}`.\n* **Deleted** Counts: `{}`.\n* **Edited** Counts: `{}`.", result.channel_id, result.correct, result.incorrect, result.deleted_count_message, result.edited_count_message),
@@ -234,7 +265,8 @@ pub async fn user(context: utils::Context<'_>, user: serenity::User) -> Result<(
 
     context
         .send(poise::CreateReply::default().embed(embed).ephemeral(true))
-        .await?;
+        .await
+        .expect("Failed to send message in handlers/counting@user");
 
     Ok(())
 }

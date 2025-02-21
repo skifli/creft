@@ -32,7 +32,8 @@ pub async fn add_admin(
         .bind(guild_id)
         .bind(user_id)
         .execute(pool)
-        .await?;
+        .await
+        .expect("Failed to add admin in utils/database@add_admin");
 
     Ok(())
 }
@@ -49,7 +50,7 @@ pub async fn add_counting_channel(
     .bind(channel_id)
     .bind(guild_id)
     .execute(pool)
-    .await?;
+    .await.expect("Failed to add counting channel in utils/database@add_counting_channel");
 
     Ok(())
 }
@@ -58,7 +59,8 @@ pub async fn cache_admins(pool: &sqlx::PgPool, guild_id: i64) -> Result<Vec<i64>
     let admins: Vec<i64> = sqlx::query("SELECT user_id FROM admins WHERE guild_id = $1")
         .bind(guild_id)
         .fetch_all(pool)
-        .await?
+        .await
+        .expect("Failed to cache admins in utils/database@cache_admins")
         .iter()
         .map(|row| row.get(0))
         .collect();
@@ -73,7 +75,8 @@ pub async fn cache_counting_channels(
     let channels: Vec<i64> = sqlx::query("SELECT channel_id FROM counting WHERE guild_id = $1")
         .bind(guild_id)
         .fetch_all(pool)
-        .await?
+        .await
+        .expect("Failed to cache counting channels in utils/database@cache_counting_channels")
         .iter()
         .map(|row| row.get(0))
         .collect();
@@ -85,11 +88,13 @@ pub async fn counting_channel_exists(
     pool: &sqlx::PgPool,
     channel_id: i64,
 ) -> Result<bool, sqlx::Error> {
-    let exists: (bool,) =
-        sqlx::query_as("SELECT EXISTS (SELECT 1 FROM counting WHERE channel_id = $1)")
-            .bind(channel_id)
-            .fetch_one(pool)
-            .await?;
+    let exists: (bool,) = sqlx::query_as(
+        "SELECT EXISTS (SELECT 1 FROM counting WHERE channel_id = $1)",
+    )
+    .bind(channel_id)
+    .fetch_one(pool)
+    .await
+    .expect("Failed to check if counting channel exists in utils/database@counting_channel_exists");
 
     Ok(exists.0) // Returns true if the channel exists, false otherwise
 }
@@ -109,7 +114,7 @@ pub async fn create_counting_stats(
     .bind(user_id)
     .bind(guild_id)
     .execute(pool)
-    .await?;
+    .await.expect("Failed to create counting stats in utils/database@create_counting_stats");
 
     Ok(())
 }
@@ -122,7 +127,8 @@ pub async fn get_counting_channel(
         sqlx::query_as::<_, CountingChannel>("SELECT * FROM counting WHERE channel_id = $1")
             .bind(channel_id)
             .fetch_optional(pool)
-            .await?;
+            .await
+            .expect("Failed to get counting channel in utils/database@get_counting_channel");
 
     Ok(channel) // Returns Some(channel) if found, None if not
 }
@@ -138,7 +144,8 @@ pub async fn get_counting_stats(
     .bind(channel_id)
     .bind(user_id)
     .fetch_optional(pool)
-    .await?;
+    .await
+    .expect("Failed to get counting stats in utils/database@get_counting_stats");
 
     Ok(stats) // Returns Some(stats) if found, None if not
 }
@@ -160,7 +167,8 @@ pub async fn remove_admin(
         .bind(guild_id)
         .bind(user_id)
         .execute(pool)
-        .await?;
+        .await
+        .expect("Failed to remove admin in utils/database@remove_admin");
 
     Ok(())
 }
@@ -172,7 +180,8 @@ pub async fn remove_counting_channel(
     sqlx::query("DELETE FROM counting WHERE channel_id = $1")
         .bind(channel_id)
         .execute(pool)
-        .await?;
+        .await
+        .expect("Failed to remove counting channel in utils/database@remove_counting_channel");
 
     Ok(())
 }
@@ -194,7 +203,7 @@ pub async fn update_counting_channel(
     .bind(channel.resets_count)
     .bind(channel.channel_id)
     .execute(pool)
-    .await?;
+    .await.expect("Failed to update counting channel in utils/database@update_counting_channel");
 
     Ok(())
 }
@@ -217,7 +226,7 @@ pub async fn update_counting_stats(
     .bind(stats.correct)
     .bind(stats.incorrect)
     .execute(pool)
-    .await?;
+    .await.expect("Failed to update counting stats in utils/database@update_counting_stats");
 
     Ok(())
 }

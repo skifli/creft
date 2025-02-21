@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-pemel = "0.2.0"
+lieval = "0.2.5"
 poise = "0.6.1"
 shuttle-runtime = "0.52.0"
 shuttle-serenity = "0.52.0"

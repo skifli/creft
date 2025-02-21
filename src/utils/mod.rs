@@ -2,6 +2,8 @@ pub mod database;
 pub mod embeds;
 pub mod message;
 
+pub const BOT_ID: i64 = 1072138571596709898;
+
 pub type Context<'a> = poise::Context<'a, ServerData, Error>;
 
 pub struct ServerData {

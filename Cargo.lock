@@ -310,7 +310,7 @@ dependencies = [
 name = "creft"
 version = "0.1.0"
 dependencies = [
- "pemel",
+ "lieval",
  "poise",
  "shuttle-runtime",
  "shuttle-serenity",
@@ -1314,6 +1314,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "lieval"
+version = "0.2.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2809e36a991fdfbe52758486948be99836ab660808deb7a6ff4b90320b56dc71"
+
+[[package]]
 name = "linux-raw-sys"
 version = "0.4.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1538,12 +1544,6 @@ checksum = "88b39c9bfcfc231068454382784bb460aae594343fb030d46e9f50a645418412"
 dependencies = [
  "base64ct",
 ]
-
-[[package]]
-name = "pemel"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1c248a480190a48329461d5bde6da2a159c8b992b55678b932895e98e4199167"
 
 [[package]]
 name = "percent-encoding"
