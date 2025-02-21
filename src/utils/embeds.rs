@@ -13,7 +13,7 @@ pub fn create(
 
     if generic_footer {
         embed = embed.footer(serenity::CreateEmbedFooter::new(
-            "Run **/about** for more information about the bot.",
+            "Run /about for more information about the bot.",
         ));
     }
 

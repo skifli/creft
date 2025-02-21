@@ -189,7 +189,7 @@ pub async fn channel(
             serenity::Colour::new(6591981),
             format!("Stats for <#{}>", channel_id).as_str(),
             format!(
-                "The last user to count was <@{}> at [this message](https://discord.com/channels/{}/{}/{}).\n* **Current Count**: `{}`.\n* **Max Count**: `{}`.\n* **Resets Count**: `{}`.",
+                "The last user to count was <@{}> at [this message](https://discord.com/channels/{}/{}/{}):\n* **Current Count**: `{}`.\n* **Max Count**: `{}`.\n* **Resets Count**: `{}`.",
                 result.last_count_user_id, context.guild_id().unwrap(), channel_id, result.last_count_message_id,
                 result.count, result.count_max, result.resets_count
             )
@@ -228,7 +228,7 @@ pub async fn guild(context: utils::Context<'_>) -> Result<(), utils::Error> {
     for result in results.expect("Failed to get results in handlers/counting@guild") {
         embed = embed.field(
             "",
-            format!("__Stats for <@{}>__:\n* **Correct** Counts: `{}`.\n* **Incorrect** Counts: `{}`.\n* **Deleted** Counts: `{}`.\n* **Edited** Counts: `{}`.", result.user_id, result.correct, result.incorrect, result.deleted_count_message, result.edited_count_message),
+            format!("<@{}>:\n* **Correct** Counts: `{}`.\n* **Incorrect** Counts: `{}`.\n* **Deleted** Counts: `{}`.\n* **Edited** Counts: `{}`.", result.user_id, result.correct, result.incorrect, result.deleted_count_message, result.edited_count_message),
             true,
         );
     }
@@ -253,12 +253,17 @@ pub async fn user(context: utils::Context<'_>, user: serenity::User) -> Result<(
     .fetch_all(pool)
     .await;
 
-    let mut embed = crate::utils::embeds::create(serenity::Colour::new(6591981), "Stats", "", true);
+    let mut embed = crate::utils::embeds::create(
+        serenity::Colour::new(6591981),
+        format!("Stats for **{}**", user.name).as_str(),
+        "",
+        true,
+    );
 
     for result in results.expect("Failed to get results in handlers/counting@user") {
         embed = embed.field(
             "",
-            format!("__Stats for <#{}>__:\n* **Correct** Counts: `{}`.\n* **Incorrect** Counts: `{}`.\n* **Deleted** Counts: `{}`.\n* **Edited** Counts: `{}`.", result.channel_id, result.correct, result.incorrect, result.deleted_count_message, result.edited_count_message),
+            format!("<#{}>:\n* **Correct** Counts: `{}`.\n* **Incorrect** Counts: `{}`.\n* **Deleted** Counts: `{}`.\n* **Edited** Counts: `{}`.", result.channel_id, result.correct, result.incorrect, result.deleted_count_message, result.edited_count_message),
             true,
         );
     }

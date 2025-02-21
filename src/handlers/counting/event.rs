@@ -1,4 +1,4 @@
-use crate::utils::{self, message};
+use crate::utils;
 use poise::serenity_prelude as serenity;
 
 pub async fn message_create(
@@ -210,6 +210,13 @@ pub async fn message_update(
                 .await
                 .expect("Failed to send message in handlers/counting/event@message_update");
 
+            new.react(context, '🗿').await.expect(
+                "Failed to react to message with 🗿 in handlers/counting/event@message_update",
+            );
+            new.delete_reaction_emoji(context, '✅').await.expect(
+                "Failed to delete reaction to message with ✅ in handlers/counting/event@message_update",
+            );
+
             counting_channel.last_count_message_edited = true;
             utils::database::update_counting_channel(pool, &counting_channel)
                 .await
@@ -244,8 +251,6 @@ pub async fn reaction_add(
     add_reaction: &serenity::Reaction,
     data: &utils::ServerData,
 ) -> Result<(), utils::Error> {
-    // if X reacted by admin to self message, delete said message
-
     let pool = &data.pool;
     let message_author_id = i64::from(
         add_reaction
