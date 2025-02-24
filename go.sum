@@ -28,8 +28,8 @@ github.com/gorilla/websocket v1.4.1/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/ad
 github.com/klauspost/compress v1.10.3/go.mod h1:aoV0uJVorq1K+umq18yTdKaF57EivdYsUV+/s2qKfXs=
 github.com/klauspost/compress v1.17.11 h1:In6xLpyWOi1+C7tXUUWv2ot1QvBjxevKAaI6IXrJmUc=
 github.com/klauspost/compress v1.17.11/go.mod h1:pMDklpSncoRMuLFrf1W9Ss9KT+0rH90U12bZKk7uwG0=
-github.com/maja42/goval v1.4.0 h1:tlX0X+GvjKzWW2Q6qzWwL4Av2KV1bLtzxwzgxiiwEPc=
-github.com/maja42/goval v1.4.0/go.mod h1:LDMwF8ocOwIsMZdwoyHC/3UpV8ABDwEzalxkVV2z/rI=
+github.com/maja42/goval v1.6.0 h1:MuLTfgPuaEyGQTchYQTv2QvAiHbS2YjtOjviD2ymijE=
+github.com/maja42/goval v1.6.0/go.mod h1:LDMwF8ocOwIsMZdwoyHC/3UpV8ABDwEzalxkVV2z/rI=
 github.com/mattn/go-colorable v0.1.13/go.mod h1:7S9/ev0klgBDR4GtXTXX8a3vIGJpMovkB8vQcUbaXHg=
 github.com/mattn/go-colorable v0.1.14 h1:9A9LHSqF/7dyVVX6g0U9cwm9pG3kP9gSzcuIPHPsaIE=
 github.com/mattn/go-colorable v0.1.14/go.mod h1:6LmQG8QLFO4G5z1gPvYEzlUgJ2wF+stgPZH1UqBm1s8=

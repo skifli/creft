@@ -7,7 +7,7 @@ toolchain go1.23.4
 require (
 	github.com/alexflint/go-arg v1.5.1 // Arg Parsing
 	github.com/goccy/go-json v0.10.5 // JSON Marshaller / Demarshaller
-	github.com/maja42/goval v1.4.0 // Expression evaluation
+	github.com/maja42/goval v1.6.0 // Expression evaluation
 	github.com/skifli/golog v1.1.0 // Better Logging
 	github.com/switchupcb/disgo v1.10.2 // Discord API Wrapper
 )
