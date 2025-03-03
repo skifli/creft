@@ -9,7 +9,7 @@ require (
 	github.com/goccy/go-json v0.10.5 // JSON Marshaller / Demarshaller
 	github.com/maja42/goval v1.6.0 // Expression evaluation
 	github.com/skifli/golog v1.1.0 // Better Logging
-	github.com/switchupcb/disgo v1.10.2 // Discord API Wrapper
+	github.com/switchupcb/disgo v1.10.21 // Discord API Wrapper
 )
 
 require (
