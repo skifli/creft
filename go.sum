@@ -50,8 +50,8 @@ github.com/skifli/golog v1.1.0/go.mod h1:PB5/BtIUjQzJyMbpdBJLuCBbAt5p1xlC+NkBauO
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
 github.com/stretchr/testify v1.8.1 h1:w7B6lhMri9wdJUVmEZPGGhZzrYTPvgJArz7wNPgYKsk=
 github.com/stretchr/testify v1.8.1/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
-github.com/switchupcb/disgo v1.10.2 h1:gGFYTgMuW7st+QQvLPmQjJvWed154yaA1h5d7v7Uttc=
-github.com/switchupcb/disgo v1.10.2/go.mod h1:DOIpvW2s8I73N7NWEtcU4PGoULiqcemsbUfDqpuyVSo=
+github.com/switchupcb/disgo v1.10.21 h1:J9oPOvbvR246Fvn+2Jk3TL/JGkl0TLVRTIZt0xr/g5Y=
+github.com/switchupcb/disgo v1.10.21/go.mod h1:DOIpvW2s8I73N7NWEtcU4PGoULiqcemsbUfDqpuyVSo=
 github.com/switchupcb/websocket v1.8.8 h1:0x7RIs90NJ8YggqcLdKeb/LTofJ1BY79n784pkLyk5o=
 github.com/switchupcb/websocket v1.8.8/go.mod h1:HdhyzCLfOFPrBv+QNcnDSbv8L8rfJ7ZCulrBKZJHip0=
 github.com/valyala/bytebufferpool v1.0.0 h1:GqA5TC/0021Y/b9FG4Oi9Mr3q7XYx6KllzawFIhcdPw=
