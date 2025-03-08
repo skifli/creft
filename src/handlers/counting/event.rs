@@ -1,5 +1,5 @@
 use crate::utils;
-use poise::serenity_prelude as serenity;
+use poise::serenity_prelude::{self as serenity, client};
 
 pub async fn message_create(
     context: &serenity::Context,
@@ -169,17 +169,12 @@ pub async fn message_delete(
 
 pub async fn message_update(
     context: &serenity::Context,
-    new: &Option<serenity::Message>,
+    event: &serenity::MessageUpdateEvent,
     data: &utils::ServerData,
 ) -> Result<(), utils::Error> {
     let pool = &data.pool;
 
-    if new.is_none() {
-        return Ok(());
-    }
-
-    let new = new.as_ref().unwrap();
-    let channel_id = i64::from(new.channel_id);
+    let channel_id = i64::from(event.channel_id);
 
     let counting_channel = utils::database::get_counting_channel(pool, channel_id)
         .await
@@ -187,9 +182,10 @@ pub async fn message_update(
 
     if let Some(mut counting_channel) = counting_channel {
         if !counting_channel.last_count_message_edited
-            && counting_channel.last_count_message_id == i64::from(new.id)
+            && counting_channel.last_count_message_id == i64::from(event.id)
         {
-            new.channel_id
+            event
+                .channel_id
                 .send_message(
                     context,
                     serenity::CreateMessage::default()
@@ -205,17 +201,28 @@ pub async fn message_update(
                             )
                             .footer(serenity::CreateEmbedFooter::new("Cheeky!")),
                         )
-                        .reference_message(new),
+                        .reference_message(
+                            serenity::MessageReference::new(
+                                serenity::MessageReferenceKind::Default,
+                                event.channel_id,
+                            )
+                            .guild_id(event.guild_id.unwrap())
+                            .message_id(event.id),
+                        ),
                 )
                 .await
                 .expect("Failed to send message in handlers/counting/event@message_update");
 
-            new.react(context, '🗿').await.expect(
+            /*
+            TODO: FIX AND ADD BACK
+
+            message.react(context, '🗿').await.expect(
                 "Failed to react to message with 🗿 in handlers/counting/event@message_update",
             );
-            new.delete_reaction_emoji(context, '✅').await.expect(
+            message.delete_reaction_emoji(context, '✅').await.expect(
                 "Failed to delete reaction to message with ✅ in handlers/counting/event@message_update",
             );
+            */
 
             counting_channel.last_count_message_edited = true;
             utils::database::update_counting_channel(pool, &counting_channel)

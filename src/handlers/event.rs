@@ -28,10 +28,10 @@ pub async fn event_handler(
         }
         serenity::FullEvent::MessageUpdate {
             old_if_available: _,
-            new,
-            event: _,
+            new: _,
+            event: event,
         } => {
-            counting::event::message_update(ctx, new, data)
+            counting::event::message_update(ctx, event, data)
                 .await
                 .expect("Failed to execute counting message_update handler");
         }

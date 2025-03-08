@@ -1,6 +1,6 @@
 use sqlx::Row;
 
-#[derive(sqlx::FromRow)]
+#[derive(sqlx::FromRow, Debug)]
 pub struct CountingChannel {
     pub channel_id: i64,
     pub guild_id: i64,
