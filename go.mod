@@ -5,7 +5,7 @@ go 1.23
 toolchain go1.23.4
 
 require (
-	github.com/alexflint/go-arg v1.6.0 // Arg Parsing
+	github.com/alexflint/go-arg v1.6.1 // Arg Parsing
 	github.com/goccy/go-json v0.10.5 // JSON Marshaller / Demarshaller
 	github.com/maja42/goval v1.6.0 // Expression evaluation
 	github.com/skifli/golog v1.1.0 // Better Logging
